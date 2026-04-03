@@ -2177,25 +2177,10 @@
           mitigation: '✓ archive-traces.sh built: keeps last 90 days hot, moves older sessions to traces/archive/. Supports --dry-run. Run manually or add to cron.'
         },
         {
-          title: 'Lessons Vault Staleness',
-          issue: 'lessons-staleness-check.sh referenced _meta/cross-project-lessons.md but vault uses 07-lessons/ structure. Script existed but pointed to wrong path.',
-          mitigation: '✓ Path fixed 2026-04-03: _meta/ → 07-lessons/. Python3 PATH guard added (export PATH="/usr/local/bin:/usr/bin:/bin:$PATH") for non-interactive shell compatibility. compile-lessons.sh confirmed executable.'
-        },
-        {
           title: 'Single Point of Failure — CLAUDE.md',
           issue: 'All harness behavior flows from one file. If CLAUDE.md becomes corrupted or loses entries, harness behavior degrades silently.',
           mitigation: '✓ claude-md-validator.sh built and wired as SessionStart hook. Checks: exists → >500 bytes → key sections present (Global Instructions, Context7, Auto-Activation) → valid UTF-8. Auto-recovers from harness-versions/ backup if file is missing.'
         },
-        {
-          title: 'API Key Exposure (RESOLVED 2026-04-03)',
-          issue: 'OpenAI key sk-proj-S0yiX… was hardcoded in ~/.claude/settings.json env block.',
-          mitigation: '✓ Resolved: env block removed from settings.json (chmod 600). Key moved to ~/.zshenv (chmod 600). All candidate snapshots scanned — clean. serialize-candidate.sh already had jq del(.env) guard. Read(~/.zshenv) deny rule in permissions.'
-        },
-        {
-          title: 'ADR Coverage (RESOLVED 2026-04-03)',
-          issue: 'Only 3 of ~10 architecture decisions documented. Hook architecture, agent memory strategy, and security policy had no ADR.',
-          mitigation: '✓ Resolved: ADR-004 (hook system architecture), ADR-005 (agent memory architecture), ADR-006 (security policy) written to 05-decisions/. MOC-Decisions.md updated.'
-        }
       ]
     };
 
