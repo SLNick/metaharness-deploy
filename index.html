@@ -1,0 +1,3353 @@
+<!DOCTYPE html>
+<html id="top" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Harness — Character Equipment Sheet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a10;
+      --panel: #12121e;
+      --panel-inner: #0f0f1a;
+      --gold: #c8a84b;
+      --gold-bright: #f0cc6a;
+      --gold-dim: #7a6428;
+      --purple: #a335ee;
+      --epic: #ff8000;
+      --rare: #0070dd;
+      --uncommon: #1eff00;
+      --grey: #555;
+      --grey-light: #888;
+      --text: #d2c69a;
+      --text-dim: #7a6e58;
+      --red: #ff2020;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       SCROLLBAR
+    ============================================================ */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+    /* ============================================================
+       PAGE HEADER
+    ============================================================ */
+    .page-header {
+      text-align: center;
+      padding: 32px 20px 16px;
+      border-bottom: 1px solid var(--gold-dim);
+      background: linear-gradient(180deg, #0d0d1a 0%, var(--bg) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(200,168,75,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .page-header h1 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--gold-bright);
+      text-shadow: 0 0 30px rgba(200,168,75,0.4), 0 2px 4px rgba(0,0,0,0.8);
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .page-header .subtitle {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .page-header .harness-version {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 2px 12px;
+      border: 1px solid var(--gold-dim);
+      border-radius: 2px;
+      font-size: 0.72rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ============================================================
+       TAB NAVIGATION
+    ============================================================ */
+    .tab-nav {
+      display: flex;
+      align-items: stretch;
+      background: linear-gradient(180deg, #0e0e1c 0%, #0a0a14 100%);
+      border-bottom: 2px solid var(--gold-dim);
+      padding: 0 20px;
+      gap: 2px;
+      overflow-x: auto;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .tab-nav::-webkit-scrollbar { height: 3px; }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      padding: 14px 20px 11px;
+      color: var(--gold-dim);
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+
+    .tab-btn:hover {
+      color: var(--gold);
+      background: rgba(200,168,75,0.06);
+    }
+
+    .tab-btn.active {
+      color: var(--gold-bright);
+      border-bottom-color: var(--gold-bright);
+      background: rgba(200,168,75,0.05);
+    }
+
+    /* ============================================================
+       TAB PANELS
+    ============================================================ */
+    .tab-panel {
+      display: none;
+      padding: 24px 20px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .tab-panel.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       SECTION HEADERS (shared across tabs)
+    ============================================================ */
+    .tab-section-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--gold-bright);
+      text-align: center;
+      margin-bottom: 8px;
+      text-shadow: 0 0 20px rgba(200,168,75,0.3);
+    }
+
+    .tab-section-sub {
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 28px;
+    }
+
+    /* ============================================================
+       TAB 1 — EQUIPMENT: CHARACTER FRAME
+    ============================================================ */
+    .character-frame {
+      display: grid;
+      grid-template-columns: 172px 1fr 172px;
+      grid-template-rows: auto auto;
+      gap: 0;
+      background: var(--panel);
+      border: 1px solid var(--gold-dim);
+      border-radius: 4px;
+      padding: 16px;
+      position: relative;
+    }
+
+    .character-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 4px;
+      background: radial-gradient(ellipse at 50% 20%, rgba(200,168,75,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Slot columns */
+    .slot-column {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 4px;
+    }
+
+    .slot-column.left  { align-items: flex-end; }
+    .slot-column.right { align-items: flex-start; }
+
+    /* Character center panel */
+    .char-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      min-height: 600px;
+    }
+
+    .char-nameplate {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .char-name {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--gold-bright);
+      text-shadow: 0 0 20px rgba(200,168,75,0.5);
+      letter-spacing: 0.06em;
+    }
+
+    .char-class {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      color: var(--purple);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .char-ilvl-badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 16px;
+      background: linear-gradient(135deg, #1a1208 0%, #2a1e08 100%);
+      border: 1px solid var(--gold-dim);
+      border-radius: 2px;
+      font-size: 0.72rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+    }
+
+    .char-ilvl-badge span {
+      color: var(--gold-bright);
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    /* Neural network SVG container */
+    #neural-net-svg {
+      width: 240px;
+      height: 240px;
+      flex-shrink: 0;
+    }
+
+    /* Bottom row (weapons) */
+    .bottom-row {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 8px 4px 4px;
+      border-top: 1px solid rgba(200,168,75,0.15);
+      margin-top: 4px;
+    }
+
+    /* ============================================================
+       GEAR SLOTS
+    ============================================================ */
+    .gear-slot {
+      width: 158px;
+      background: var(--panel-inner);
+      border: 1px solid var(--gold-dim);
+      border-radius: 3px;
+      padding: 7px 9px;
+      cursor: pointer;
+      position: relative;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+      user-select: none;
+    }
+
+    .gear-slot:hover {
+      border-color: var(--gold);
+      box-shadow: 0 0 12px rgba(200,168,75,0.2);
+      transform: translateY(-1px);
+    }
+
+    .gear-slot.slot-legendary { border-color: var(--gold-dim); }
+    .gear-slot.slot-legendary:hover { border-color: var(--gold-bright); box-shadow: 0 0 16px rgba(200,168,75,0.35); }
+    .gear-slot.slot-epic { border-color: #7a4400; }
+    .gear-slot.slot-epic:hover { border-color: var(--epic); box-shadow: 0 0 12px rgba(255,128,0,0.25); }
+    .gear-slot.slot-rare { border-color: #003870; }
+    .gear-slot.slot-rare:hover { border-color: var(--rare); box-shadow: 0 0 12px rgba(0,112,221,0.25); }
+    .gear-slot.slot-missing { border-color: #333; border-style: dashed; opacity: 0.7; }
+
+    /* Gold pulse animation on click */
+    @keyframes goldPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(200,168,75,0.7); }
+      50%  { box-shadow: 0 0 0 8px rgba(200,168,75,0.1); }
+      100% { box-shadow: 0 0 0 14px rgba(200,168,75,0); }
+    }
+
+    .gear-slot.pulse { animation: goldPulse 0.5s ease-out; }
+
+    .slot-label {
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .slot-body {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .slot-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .slot-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .slot-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+
+    .quality-legendary .slot-name { color: var(--gold-bright); }
+    .quality-epic .slot-name      { color: var(--epic); }
+    .quality-rare .slot-name      { color: var(--rare); }
+    .quality-missing .slot-name   { color: var(--grey); }
+
+    .slot-ilvl-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .slot-ilvl {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+    }
+
+    .slot-ilvl strong {
+      color: var(--text);
+      font-size: 0.78rem;
+    }
+
+    .quality-gem {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 0 4px currentColor;
+    }
+
+    .gem-legendary { background: var(--gold-bright); color: var(--gold-bright); }
+    .gem-epic      { background: var(--epic);        color: var(--epic); }
+    .gem-rare      { background: var(--rare);         color: var(--rare); }
+    .gem-missing   { background: var(--grey);         color: var(--grey); box-shadow: none; }
+
+    /* Missing slot X overlay */
+    .slot-missing-x {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .slot-missing-x::after {
+      content: '✕';
+      font-size: 1.8rem;
+      color: var(--grey);
+      opacity: 0.35;
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* ============================================================
+       STAT BAR
+    ============================================================ */
+    .stat-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 24px;
+      padding: 14px 20px;
+      background: var(--panel);
+      border: 1px solid var(--gold-dim);
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      margin-bottom: 20px;
+    }
+
+    .stat-bar-item {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .stat-bar-label {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .stat-bar-val {
+      font-family: 'Cinzel', serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .stat-bar-val.gold    { color: var(--gold-bright); }
+    .stat-bar-val.purple  { color: var(--purple); }
+    .stat-bar-val.epic    { color: var(--epic); }
+    .stat-bar-val.rare    { color: var(--rare); }
+    .stat-bar-val.green   { color: var(--uncommon); }
+    .stat-bar-val.red     { color: var(--red); }
+
+    /* ============================================================
+       TOOLTIP
+    ============================================================ */
+    #tooltip {
+      position: fixed;
+      z-index: 9999;
+      width: 280px;
+      background: linear-gradient(180deg, #1a1226 0%, #0f0c1a 100%);
+      border: 1px solid var(--gold-dim);
+      border-radius: 4px;
+      padding: 14px 16px;
+      pointer-events: none;
+      display: none;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.7), inset 0 1px 0 rgba(200,168,75,0.1);
+    }
+
+    #tooltip.show { display: block; }
+
+    .tt-slot-label {
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .tt-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .tt-quality-legendary { color: var(--gold-bright); }
+    .tt-quality-epic      { color: var(--epic); }
+    .tt-quality-rare      { color: var(--rare); }
+    .tt-quality-missing   { color: var(--grey); }
+
+    .tt-ilvl {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+
+    .tt-ilvl strong { color: var(--text); }
+
+    .tt-divider {
+      border: none;
+      border-top: 1px solid rgba(200,168,75,0.2);
+      margin: 8px 0;
+    }
+
+    .tt-path {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      word-break: break-all;
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+
+    .tt-desc {
+      font-size: 0.75rem;
+      color: var(--text);
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+
+    .tt-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .tt-stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+    }
+
+    .tt-stat-label { color: var(--text-dim); }
+
+    .tt-stat-val {
+      color: var(--uncommon);
+      font-weight: bold;
+    }
+
+    .tt-enchants {
+      margin-top: 6px;
+    }
+
+    .tt-enchant-label {
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .tt-enchant-item {
+      font-size: 0.7rem;
+      color: #72c1f5;
+      padding-left: 8px;
+      position: relative;
+    }
+
+    .tt-enchant-item::before {
+      content: '⋄';
+      position: absolute;
+      left: 0;
+      color: var(--rare);
+    }
+
+    .tt-missing-warning {
+      background: rgba(255,32,32,0.12);
+      border: 1px solid rgba(255,32,32,0.3);
+      border-radius: 3px;
+      padding: 6px 10px;
+      font-size: 0.72rem;
+      color: var(--red);
+      margin-top: 8px;
+    }
+
+    /* ============================================================
+       TAB 2 — SCORING
+    ============================================================ */
+    .scoring-grid {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .scoring-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Formula block */
+    .formula-block {
+      background: var(--panel-inner);
+      border: 1px solid var(--gold-dim);
+      border-radius: 4px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .formula-block h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 0.78rem;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .formula-body {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text);
+      line-height: 1.8;
+      white-space: pre;
+    }
+
+    .formula-body .hl-gold    { color: var(--gold-bright); }
+    .formula-body .hl-leg     { color: var(--gold-bright); }
+    .formula-body .hl-epic    { color: var(--epic); }
+    .formula-body .hl-rare    { color: var(--rare); }
+    .formula-body .hl-grey    { color: var(--grey-light); }
+    .formula-body .hl-dim     { color: var(--text-dim); }
+
+    /* Dimension cards */
+    .dimension-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .dimension-card {
+      background: var(--panel-inner);
+      border: 1px solid rgba(200,168,75,0.2);
+      border-left: 3px solid var(--gold);
+      border-radius: 3px;
+      padding: 12px 16px;
+    }
+
+    .dimension-card h4 {
+      font-family: 'Cinzel', serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .dim-maturity { border-left-color: #f0cc6a; }
+    .dim-maturity h4 { color: var(--gold-bright); }
+    .dim-coverage { border-left-color: #0070dd; }
+    .dim-coverage h4 { color: var(--rare); }
+    .dim-integration { border-left-color: #a335ee; }
+    .dim-integration h4 { color: var(--purple); }
+
+    .dimension-card p {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    .dimension-card .weight-badge {
+      display: inline-block;
+      padding: 1px 8px;
+      border-radius: 2px;
+      font-size: 0.65rem;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .weight-badge.w40 { background: rgba(200,168,75,0.15); color: var(--gold); }
+    .weight-badge.w30b { background: rgba(0,112,221,0.15); color: var(--rare); }
+    .weight-badge.w30p { background: rgba(163,53,238,0.15); color: var(--purple); }
+
+    /* Overall score display */
+    .overall-score-box {
+      background: linear-gradient(135deg, #1a1208 0%, #120e04 100%);
+      border: 2px solid var(--gold-dim);
+      border-radius: 4px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .overall-score-number {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: var(--gold-bright);
+      line-height: 1;
+      text-shadow: 0 0 40px rgba(200,168,75,0.5);
+    }
+
+    .overall-score-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 6px;
+      margin-bottom: 12px;
+    }
+
+    .overall-score-meta {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+
+    .overall-score-meta .red { color: var(--red); }
+    .overall-score-meta .green { color: var(--uncommon); }
+
+    /* Score breakdown table */
+    .score-table-wrap {
+      background: var(--panel-inner);
+      border: 1px solid var(--gold-dim);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .score-table-wrap h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid rgba(200,168,75,0.2);
+      background: rgba(200,168,75,0.04);
+    }
+
+    .score-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.72rem;
+    }
+
+    .score-table thead th {
+      padding: 9px 12px;
+      text-align: left;
+      color: var(--text-dim);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(200,168,75,0.15);
+      white-space: nowrap;
+      background: rgba(0,0,0,0.2);
+    }
+
+    .score-table tbody tr {
+      border-bottom: 1px solid rgba(200,168,75,0.07);
+      transition: background 0.15s;
+    }
+
+    .score-table tbody tr:hover { background: rgba(200,168,75,0.04); }
+    .score-table tbody tr.missing-row { opacity: 0.5; }
+
+    .score-table td {
+      padding: 7px 12px;
+      vertical-align: middle;
+    }
+
+    .td-slot {
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .td-component {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 140px;
+    }
+
+    .td-score-val {
+      text-align: right;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text);
+    }
+
+    .td-score-val.dash { color: var(--grey); text-align: center; }
+
+    .td-ilvl {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .quality-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-size: 0.6rem;
+      font-weight: bold;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .qb-legendary { background: rgba(200,168,75,0.15); color: var(--gold-bright); border: 1px solid rgba(200,168,75,0.3); }
+    .qb-epic      { background: rgba(255,128,0,0.12);  color: var(--epic);        border: 1px solid rgba(255,128,0,0.3); }
+    .qb-rare      { background: rgba(0,112,221,0.12);  color: var(--rare);        border: 1px solid rgba(0,112,221,0.3); }
+    .qb-missing   { background: rgba(80,80,80,0.12);   color: var(--grey-light);  border: 1px solid rgba(80,80,80,0.3); }
+
+    .score-table-note {
+      padding: 12px 16px;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      border-top: 1px solid rgba(200,168,75,0.12);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* ============================================================
+       TAB 3 — UPGRADE PATHS
+    ============================================================ */
+    .upgrade-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 1100px) { .upgrade-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 680px)  { .upgrade-grid { grid-template-columns: 1fr; } }
+
+    .upgrade-card {
+      background: var(--panel-inner);
+      border: 1px solid rgba(200,168,75,0.18);
+      border-radius: 4px;
+      padding: 16px;
+      position: relative;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .upgrade-card:hover {
+      border-color: rgba(200,168,75,0.38);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    /* Critical (missing slot) card — pulsing red border */
+    .upgrade-card.critical {
+      border-color: rgba(255,32,32,0.4);
+    }
+
+    @keyframes critPulse {
+      0%,100% { box-shadow: 0 0 8px rgba(255,32,32,0.2); border-color: rgba(255,32,32,0.4); }
+      50%      { box-shadow: 0 0 18px rgba(255,32,32,0.5); border-color: rgba(255,32,32,0.7); }
+    }
+
+    .upgrade-card.critical {
+      animation: critPulse 2.4s ease-in-out infinite;
+    }
+
+    /* Max tier card */
+    .upgrade-card.max-tier {
+      border-color: rgba(200,168,75,0.12);
+      opacity: 0.8;
+    }
+
+    .upgrade-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .uc-icon { font-size: 1.25rem; line-height: 1; }
+
+    .uc-meta { flex: 1; min-width: 0; }
+
+    .uc-slot-label {
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .uc-item-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .uc-item-name.qc-legendary { color: var(--gold-bright); }
+    .uc-item-name.qc-epic      { color: var(--epic); }
+    .uc-item-name.qc-rare      { color: var(--rare); }
+    .uc-item-name.qc-missing   { color: var(--grey); }
+
+    /* Tier transition row */
+    .tier-transition {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 7px 10px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 3px;
+    }
+
+    .tier-badge {
+      font-size: 0.65rem;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+
+    .tb-legendary { background: rgba(200,168,75,0.15); color: var(--gold-bright); border: 1px solid rgba(200,168,75,0.35); }
+    .tb-epic      { background: rgba(255,128,0,0.12);  color: var(--epic);        border: 1px solid rgba(255,128,0,0.3); }
+    .tb-rare      { background: rgba(0,112,221,0.12);  color: var(--rare);        border: 1px solid rgba(0,112,221,0.3); }
+    .tb-missing   { background: rgba(80,80,80,0.12);   color: var(--grey-light);  border: 1px solid rgba(80,80,80,0.3); }
+    .tb-max       { background: rgba(200,168,75,0.08); color: var(--gold-dim);    border: 1px solid rgba(200,168,75,0.2); }
+
+    .tier-arrow {
+      color: var(--gold);
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    /* Requirements list */
+    .uc-reqs-label {
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .uc-req-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 12px;
+    }
+
+    .uc-req-item {
+      display: flex;
+      gap: 7px;
+      font-size: 0.72rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .uc-req-num {
+      color: var(--gold);
+      font-weight: bold;
+      flex-shrink: 0;
+      width: 14px;
+    }
+
+    /* Sustain items (max tier) */
+    .uc-sustain-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .uc-sustain-item {
+      display: flex;
+      gap: 6px;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      line-height: 1.45;
+      font-style: italic;
+    }
+
+    .uc-sustain-item::before {
+      content: '◆';
+      color: var(--gold-dim);
+      flex-shrink: 0;
+      font-size: 0.55rem;
+      margin-top: 3px;
+    }
+
+    /* Effort badge */
+    .uc-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(200,168,75,0.1);
+    }
+
+    .effort-badge {
+      font-size: 0.65rem;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 2px;
+    }
+
+    .effort-low    { background: rgba(30,255,0,0.08);  color: var(--uncommon); border: 1px solid rgba(30,255,0,0.25); }
+    .effort-medium { background: rgba(255,128,0,0.08); color: var(--epic);     border: 1px solid rgba(255,128,0,0.25); }
+    .effort-high   { background: rgba(255,32,32,0.08); color: var(--red);      border: 1px solid rgba(255,32,32,0.25); }
+    .effort-max    { background: rgba(200,168,75,0.06);color: var(--gold-dim); border: 1px solid rgba(200,168,75,0.15); }
+
+    .critical-badge {
+      font-size: 0.62rem;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 2px;
+      background: rgba(255,32,32,0.15);
+      color: var(--red);
+      border: 1px solid rgba(255,32,32,0.4);
+    }
+
+    /* ============================================================
+       NEURAL NET SVG ANIMATIONS (defined here for JS reference)
+    ============================================================ */
+    @keyframes nodeGlow {
+      0%, 100% { opacity: 0.6; r: 5; }
+      50%       { opacity: 1.0; r: 7; }
+    }
+
+    @keyframes ringRotate {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    @keyframes ringRotateCCW {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(-360deg); }
+    }
+
+    @keyframes pulseCore {
+      0%, 100% { opacity: 0.8; }
+      50%       { opacity: 1.0; }
+    }
+
+    @keyframes lineFlow {
+      0%   { stroke-dashoffset: 30; opacity: 0.3; }
+      50%  { opacity: 0.8; }
+      100% { stroke-dashoffset: 0;  opacity: 0.3; }
+    }
+
+    .nn-ring-1 {
+      transform-origin: 120px 120px;
+      animation: ringRotate 12s linear infinite;
+    }
+
+    .nn-ring-2 {
+      transform-origin: 120px 120px;
+      animation: ringRotateCCW 8s linear infinite;
+    }
+
+    .nn-ring-3 {
+      transform-origin: 120px 120px;
+      animation: ringRotate 18s linear infinite;
+    }
+
+    .nn-core {
+      animation: pulseCore 2s ease-in-out infinite;
+    }
+
+    /* ============================================================
+       RESPONSIVE TWEAKS
+    ============================================================ */
+    @media (max-width: 960px) {
+      .character-frame {
+        grid-template-columns: 140px 1fr 140px;
+      }
+      .gear-slot { width: 132px; }
+    }
+
+    @media (max-width: 740px) {
+      .character-frame {
+        grid-template-columns: 1fr;
+      }
+      .slot-column { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+      .gear-slot { width: 160px; }
+      .char-center { min-height: 300px; }
+    }
+
+    /* ============================================================
+       UTILITIES
+    ============================================================ */
+    .divider-gold {
+      border: none;
+      border-top: 1px solid var(--gold-dim);
+      margin: 24px 0;
+      opacity: 0.5;
+    }
+
+    .text-center { text-align: center; }
+    .mt-12 { margin-top: 12px; }
+    .mt-20 { margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       PAGE HEADER
+  ============================================================ -->
+  <header class="page-header">
+    <h1>AI Harness Equipment</h1>
+    <p class="subtitle">System Architecture · Character Sheet View</p>
+    <div class="harness-version">Harness v2026.04 &nbsp;·&nbsp; Season 4 &nbsp;·&nbsp; Nick Arvanitis</div>
+  </header>
+
+  <!-- ============================================================
+       TAB NAVIGATION
+  ============================================================ -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="equipment">⚔️ Equipment</button>
+    <button class="tab-btn" data-tab="scoring">📐 Scoring</button>
+    <button class="tab-btn" data-tab="upgrades">⬆️ Upgrade Paths</button>
+    <button class="tab-btn" data-tab="setbonuses">✨ Set Bonuses</button>
+    <button class="tab-btn" data-tab="gaps">🔴 Gaps</button>
+    <button class="tab-btn" data-tab="tests">🧪 Tests</button>
+  </nav>
+
+  <!-- ============================================================
+       SLOT DATA (shared by all tabs)
+  ============================================================ -->
+  <script>
+    const SLOTS = [
+      // LEFT COLUMN
+      { col:'left', label:'HEAD', icon:'🧠', name:'Memory System', ilvl:768, quality:'legendary', status:'active', path:'~/.claude/memory/', desc:'Persistent file-based memory that survives session resets. User profile, feedback rules, project context, cross-session learning.', stats:[{label:'Cross-Session Recall',val:'+82'},{label:'Context Priming',val:'+61'},{label:'Preference Fidelity',val:'+54'}], scoreBreakdown:{maturity:95,coverage:88,integration:92}, enchants:['auto-memory on session end','MEMORY.md index maintained'] },
+      { col:'left', label:'NECK', icon:'🔗', name:'Context7 MCP', ilvl:751, quality:'epic', status:'active', path:'MCP server: context7', desc:'Resolves live library docs. Eliminates stale API hallucinations.', stats:[{label:'API Accuracy',val:'+73'},{label:'Version Awareness',val:'+58'},{label:'Hallucination Reduction',val:'+67'}], scoreBreakdown:{maturity:85,coverage:80,integration:78}, enchants:['auto-activates on library usage','resolve-library-id → query-docs chain'] },
+      { col:'left', label:'SHOULDERS', icon:'⚔️', name:'Skills Library', ilvl:762, quality:'legendary', status:'active', path:'~/.claude/skills/', desc:'Composable skill units: frontend-design, qa-loop, deep-research, deploy-loop, implementation, browse.', stats:[{label:'Task Specialization',val:'+88'},{label:'Composability',val:'+71'},{label:'Delegation Depth',val:'+64'}], scoreBreakdown:{maturity:90,coverage:85,integration:88}, enchants:['Unix-pipe composability','skill-creator for self-improvement'] },
+      { col:'left', label:'BACK', icon:'📜', name:'Traces Store', ilvl:745, quality:'epic', status:'active', path:'~/.claude/traces/', desc:'Raw per-task causal records. Full fidelity — not summaries. The Meta-Harness paper proved this is worth 15.1 accuracy points.', stats:[{label:'Credit Assignment',val:'+91'},{label:'Debug Resolution',val:'+77'},{label:'Feedback Richness',val:'+85'}], scoreBreakdown:{maturity:82,coverage:78,integration:70}, enchants:['trace-writer.py via SessionStop hook','pareto-query.py cross-version'] },
+      { col:'left', label:'CHEST', icon:'📋', name:'CLAUDE.md Rules', ilvl:780, quality:'legendary', status:'active', path:'~/.claude/CLAUDE.md', desc:'Core chassis. Persistent instructions that override default behavior. Port rules, security patterns, architecture decisions.', stats:[{label:'Behavior Consistency',val:'+95'},{label:'Rule Enforcement',val:'+89'},{label:'Override Authority',val:'+100'}], scoreBreakdown:{maturity:98,coverage:95,integration:96}, enchants:['global + project-level cascade','overrides all default behaviors'] },
+      { col:'left', label:'SHIRT', icon:'🪝', name:'Session Hooks', ilvl:733, quality:'rare', status:'active', path:'~/.claude/settings.json → hooks', desc:'Shell commands firing on PreToolUse/PostToolUse/Stop/SessionStop. How the harness observes itself.', stats:[{label:'Automation Depth',val:'+68'},{label:'Observability',val:'+74'},{label:'Self-Monitoring',val:'+61'}], scoreBreakdown:{maturity:78,coverage:72,integration:74}, enchants:['session-learnings.sh on Stop','snapshot-settings.sh on change'] },
+      { col:'left', label:'WRIST', icon:'📚', name:'Lessons Vault', ilvl:758, quality:'legendary', status:'active', path:'~/Downloads/Claude Memory SecondBrain/_meta/cross-project-lessons.md', desc:'659 lines of distilled wisdom across all projects. Hard-won patterns that prevent regression.', stats:[{label:'Pattern Reuse',val:'+79'},{label:'Error Avoidance',val:'+83'},{label:'Cross-Project Learning',val:'+71'}], scoreBreakdown:{maturity:88,coverage:82,integration:85}, enchants:['compiled every 12 hours','adversarial synthesis pattern'] },
+      { col:'left', label:'HANDS', icon:'🤖', name:'Harness Proposer', ilvl:734, quality:'rare', status:'active', path:'~/.claude/meta-harness/scripts/harness-proposer.py', desc:'Evidence-driven proposer. Executes 5-step Evidence Reading Protocol: lists candidates → reads best/worst meta → samples degraded traces → diffs harness versions → reviews live harness. Synthesises one targeted improvement per iteration, writes proposal.md, calls serialize-candidate.sh. Wired into run-loop.py.', stats:[{label:'Self-Optimization',val:'+62'},{label:'Signal Detection',val:'+71'},{label:'Pareto Navigation',val:'+58'}], scoreBreakdown:{maturity:65,coverage:72,integration:68}, enchants:['5-step Evidence Reading Protocol','Prioritises is_error traces first','Candidate ID echoed for run-loop capture'] },
+      // RIGHT COLUMN
+      { col:'right', label:'RING 1', icon:'📊', name:'Pareto Frontier', ilvl:741, quality:'epic', status:'active', path:'~/.claude/pareto/', desc:'Tracks accuracy vs. context-cost tradeoff surface across harness versions.', stats:[{label:'Cost Efficiency',val:'+66'},{label:'Accuracy Tracking',val:'+72'},{label:'Version Comparison',val:'+58'}], scoreBreakdown:{maturity:80,coverage:75,integration:68}, enchants:['pareto-query.py','SESSION_ID.json per run'] },
+      { col:'right', label:'RING 2', icon:'💾', name:'Version Snapshots', ilvl:738, quality:'rare', status:'active', path:'~/.claude/versions/', desc:'MD5 change detection. Every harness state persisted. Rollback-safe.', stats:[{label:'Reproducibility',val:'+84'},{label:'Rollback Safety',val:'+77'},{label:'Change Detection',val:'+69'}], scoreBreakdown:{maturity:78,coverage:74,integration:71}, enchants:['snapshot-settings.sh','auto-triggers on settings change'] },
+      { col:'right', label:'WAIST', icon:'🔄', name:'QA Loop', ilvl:756, quality:'epic', status:'active', path:'~/.claude/skills/qa-loop/', desc:'4 parallel specialists + adversarial synthesis. Runs until 0 confirmed bugs. Hard cap round 5.', stats:[{label:'Bug Detection Rate',val:'+87'},{label:'False Positive Control',val:'+62'},{label:'Parallel Coverage',val:'+79'}], scoreBreakdown:{maturity:86,coverage:88,integration:82}, enchants:['council mode synthesis','70-turn degradation fix'] },
+      { col:'right', label:'LEGS', icon:'🧭', name:'SecondBrain Vault', ilvl:764, quality:'legendary', status:'active', path:'~/Downloads/Claude Memory SecondBrain/', desc:'Obsidian visual knowledge graph. Symlinks to all project repos. 659-line master lesson file.', stats:[{label:'Knowledge Density',val:'+88'},{label:'Cross-Project Linkage',val:'+76'},{label:'Pattern Emergence',val:'+69'}], scoreBreakdown:{maturity:90,coverage:84,integration:87}, enchants:['02-projects/ symlinks','cross-project-lessons.md compilation'] },
+      { col:'right', label:'FEET', icon:'⚡', name:'FastAPI / Frontend Patterns', ilvl:743, quality:'rare', status:'active', path:'memory: feedback_fastapi_patterns.md + feedback_frontend_patterns.md', desc:'Encoded patterns: FastAPI routing/ORM/state machines, React Query/AI SDK v5/dnd-kit.', stats:[{label:'Implementation Speed',val:'+71'},{label:'Pattern Consistency',val:'+66'},{label:'Stack Coverage',val:'+58'}], scoreBreakdown:{maturity:80,coverage:76,integration:72}, enchants:['auto-loaded from memory','prevents stack rediscovery'] },
+      { col:'right', label:'TRINKET 1', icon:'🌐', name:'Tavily MCP', ilvl:748, quality:'epic', status:'active', path:'MCP server: tavily', desc:'Real-time external signal capture: search, extract, crawl, map.', stats:[{label:'Signal Recency',val:'+94'},{label:'Source Coverage',val:'+73'},{label:'Extraction Fidelity',val:'+67'}], scoreBreakdown:{maturity:82,coverage:85,integration:75}, enchants:['4 tools: search/extract/crawl/map','tavily_skill for orchestrated research'] },
+      { col:'right', label:'TRINKET 2', icon:'🌉', name:'Bridges / MCP Servers', ilvl:736, quality:'rare', status:'partial', path:'MCP: context7, tavily, Gmail, Google Calendar', desc:'Connective tissue. Ensures all layers see and speak to each other. No fragmentation.', stats:[{label:'System Coherence',val:'+72'},{label:'Fragmentation Prevention',val:'+65'},{label:'Loop Closure',val:'+58'}], scoreBreakdown:{maturity:74,coverage:68,integration:62}, enchants:['partial: Gmail/Calendar bridges unstable'] },
+      { col:'right', label:'OFF-HAND', icon:'🔬', name:'Deep Research Skill', ilvl:753, quality:'epic', status:'active', path:'~/.claude/skills/deep-research/', desc:'Multi-source research with citation tracking and source credibility scoring.', stats:[{label:'Source Synthesis',val:'+81'},{label:'Citation Accuracy',val:'+76'},{label:'Credibility Scoring',val:'+68'}], scoreBreakdown:{maturity:84,coverage:80,integration:78}, enchants:['citation-backed reports','source credibility scoring'] },
+      // BOTTOM ROW
+      { col:'bottom', label:'MAIN-HAND', icon:'🗡️', name:'Implementation Planner', ilvl:771, quality:'legendary', status:'active', path:'~/.claude/skills/implementation/', desc:'Opus 4.6 + Codex in parallel on engineering gaps. Banks lessons to SecondBrain after every run.', stats:[{label:'Plan Accuracy',val:'+86'},{label:'Gap Detection',val:'+79'},{label:'Multi-Model Synthesis',val:'+91'}], scoreBreakdown:{maturity:92,coverage:88,integration:90}, enchants:['Opus 4.6 + Codex parallel','lessons banked to SecondBrain after each run'] },
+      { col:'bottom', label:'OFF-HAND WEAPON', icon:'✅', name:'Feedback Loop Closure', ilvl:749, quality:'epic', status:'active', path:'memory: feedback_*.md + session-learnings.sh', desc:"Verifies corrections landed. Tracks whether patterns recur. The loop isn't closed until evidence says so.", stats:[{label:'Loop Closure Rate',val:'+87'},{label:'Lesson Verification',val:'+74'},{label:'Regression Detection',val:'+69'}], scoreBreakdown:{maturity:82,coverage:78,integration:80}, enchants:['session-learnings.sh','feedback memory typed system'] },
+    ];
+  </script>
+
+  <!-- ============================================================
+       TAB 1 — EQUIPMENT
+  ============================================================ -->
+  <div class="tab-panel active" id="tab-equipment">
+
+    <!-- Character frame built by JS below -->
+    <div class="character-frame" id="char-frame">
+      <!-- Left column slots (HEAD → HANDS) -->
+      <div class="slot-column left" id="slots-left"></div>
+
+      <!-- Center: nameplate + neural net -->
+      <div class="char-center">
+        <div class="char-nameplate">
+          <div class="char-name">Nick Arvanitis</div>
+          <div class="char-class">Legendary · Full-Stack AI Architect</div>
+          <div class="char-ilvl-badge">Equipped Item Level &nbsp;<span id="avg-ilvl">—</span></div>
+        </div>
+        <svg id="neural-net-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- Built by JS -->
+        </svg>
+      </div>
+
+      <!-- Right column slots (RING 1 → OFF-HAND) -->
+      <div class="slot-column right" id="slots-right"></div>
+
+      <!-- Bottom row (MAIN-HAND + OFF-HAND WEAPON) -->
+      <div class="bottom-row" id="slots-bottom"></div>
+    </div>
+
+    <!-- Stat summary bar -->
+    <div class="stat-bar" id="stat-bar">
+      <div class="stat-bar-item">
+        <span class="stat-bar-label">Slots Equipped</span>
+        <span class="stat-bar-val green" id="sb-equipped">15</span>
+        <span class="stat-bar-label">/ 17</span>
+      </div>
+      <div class="stat-bar-item">
+        <span class="stat-bar-label">Missing</span>
+        <span class="stat-bar-val red" id="sb-missing">1</span>
+      </div>
+      <div class="stat-bar-item">
+        <span class="stat-bar-label">Legendary</span>
+        <span class="stat-bar-val gold" id="sb-legendary">—</span>
+      </div>
+      <div class="stat-bar-item">
+        <span class="stat-bar-label">Epic</span>
+        <span class="stat-bar-val epic" id="sb-epic">—</span>
+      </div>
+      <div class="stat-bar-item">
+        <span class="stat-bar-label">Rare</span>
+        <span class="stat-bar-val rare" id="sb-rare">—</span>
+      </div>
+      <div class="stat-bar-item">
+        <span class="stat-bar-label">Avg ilvl</span>
+        <span class="stat-bar-val gold" id="sb-avgilvl">—</span>
+      </div>
+      <div class="stat-bar-item">
+        <span class="stat-bar-label">Highest</span>
+        <span class="stat-bar-val gold" id="sb-max">—</span>
+      </div>
+    </div>
+
+  </div><!-- /tab-equipment -->
+
+  <!-- ============================================================
+       TAB 2 — SCORING
+  ============================================================ -->
+  <div class="tab-panel" id="tab-scoring">
+
+    <h2 class="tab-section-title">How Item Levels Are Calculated</h2>
+    <p class="tab-section-sub">Each slot is scored on three dimensions then multiplied by a quality factor</p>
+
+    <div class="scoring-grid">
+
+      <!-- LEFT: Methodology -->
+      <div class="scoring-left">
+
+        <!-- Formula block -->
+        <div class="formula-block">
+          <h3>The Formula</h3>
+          <div class="formula-body"><span class="hl-gold">ITEM LEVEL</span> = (<span class="hl-leg">Maturity × 0.4</span>) + (<span class="hl-rare">Coverage × 0.3</span>) + (<span class="hl-dim">Integration × 0.3</span>)
+            × Quality Multiplier
+
+<span class="hl-dim">Quality Multipliers:</span>
+  <span class="hl-leg">Legendary  ×  1.15</span>
+  <span class="hl-epic">Epic       ×  1.05</span>
+  <span class="hl-rare">Rare       ×  1.00</span>
+  <span class="hl-grey">Missing    ×  0.00</span></div>
+        </div>
+
+        <!-- Three dimensions -->
+        <div class="dimension-cards">
+
+          <div class="dimension-card dim-maturity">
+            <h4><span class="weight-badge w40">40% Weight</span> Maturity</h4>
+            <p>How battle-tested is this component? Is it actively used on every session? Does it have documented failure modes and known edge cases? A score of 100 means it has never failed in production use.</p>
+          </div>
+
+          <div class="dimension-card dim-coverage">
+            <h4><span class="weight-badge w30b">30% Weight</span> Coverage</h4>
+            <p>What percentage of relevant use cases does this slot handle? Are there known gaps or blind spots? A score of 100 means every scenario this slot should address is handled with no missing functionality.</p>
+          </div>
+
+          <div class="dimension-card dim-integration">
+            <h4><span class="weight-badge w30p">30% Weight</span> Integration</h4>
+            <p>How well does this component communicate with others? Are loops actually closed, or merely theoretical? A score of 100 means every adjacent slot can read, write, and act on this component's outputs.</p>
+          </div>
+
+        </div>
+
+        <!-- Overall score -->
+        <div class="overall-score-box">
+          <div class="overall-score-number">754</div>
+          <div class="overall-score-label">Average Equipped Item Level</div>
+          <div class="overall-score-meta">
+            <div><span class="green">16/16 slots equipped</span> &nbsp;·&nbsp; <span class="green">All components active</span></div>
+            <div style="margin-top:6px; color: var(--text-dim);">All slots equipped. Harness Proposer at Rare (ilvl 734) — upgrade to Epic unlocks full outer loop automation.<br>Projected avg at full Legendary: <strong style="color:var(--gold)">781+</strong></div>
+          </div>
+        </div>
+
+      </div><!-- /scoring-left -->
+
+      <!-- RIGHT: Score breakdown table -->
+      <div class="score-table-wrap">
+        <h3>Per-Slot Score Breakdown</h3>
+        <table class="score-table" id="score-breakdown-table">
+          <thead>
+            <tr>
+              <th>Slot</th>
+              <th>Component</th>
+              <th style="text-align:right">Maturity</th>
+              <th style="text-align:right">Coverage</th>
+              <th style="text-align:right">Integr.</th>
+              <th style="text-align:right">ilvl</th>
+              <th>Quality</th>
+            </tr>
+          </thead>
+          <tbody id="score-tbody">
+            <!-- Built by JS -->
+          </tbody>
+        </table>
+        <div class="score-table-note">
+          Scores are manually assessed based on active usage, documented patterns, and observed integration quality.
+          Run the <strong>/tests</strong> tab to log empirical measurements and update these baselines.
+        </div>
+      </div>
+
+    </div><!-- /scoring-grid -->
+
+  </div><!-- /tab-scoring -->
+
+  <!-- ============================================================
+       TAB 3 — UPGRADE PATHS
+  ============================================================ -->
+  <div class="tab-panel" id="tab-upgrades">
+
+    <h2 class="tab-section-title">Upgrade Paths</h2>
+    <p class="tab-section-sub">How to push each slot to the next tier — concrete requirements and effort estimates</p>
+
+    <div class="upgrade-grid" id="upgrade-grid">
+      <!-- Built by JS below -->
+    </div>
+
+  </div><!-- /tab-upgrades -->
+
+  <!-- ============================================================
+       TOOLTIP (fixed, shared across tabs)
+  ============================================================ -->
+  <div id="tooltip"></div>
+
+  <!-- ============================================================
+       JAVASCRIPT — Tab switching, slot rendering, neural net,
+                    scoring table, upgrade cards
+       NOTE: script left OPEN — Part 2 adds Set Bonuses / Gaps /
+             Tests JS before closing </script>
+  ============================================================ -->
+  <script>
+
+    // ——————————————————————————————————————————————
+    // TAB SWITCHING
+    // ——————————————————————————————————————————————
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const panelId = 'tab-' + btn.dataset.tab;
+        const panel = document.getElementById(panelId);
+        if (panel) panel.classList.add('active');
+      });
+    });
+
+    // ——————————————————————————————————————————————
+    // TOOLTIP LOGIC
+    // ——————————————————————————————————————————————
+    const tooltip = document.getElementById('tooltip');
+
+    function qualityColor(q) {
+      if (q === 'legendary') return 'var(--gold-bright)';
+      if (q === 'epic')      return 'var(--epic)';
+      if (q === 'rare')      return 'var(--rare)';
+      return 'var(--grey)';
+    }
+
+    function showTooltip(slot, event) {
+      const isMissing = slot.quality === 'missing';
+      const statsHtml = slot.stats.map(s =>
+        `<div class="tt-stat-row"><span class="tt-stat-label">${s.label}</span><span class="tt-stat-val">${s.val}</span></div>`
+      ).join('');
+      const enchantsHtml = slot.enchants.length
+        ? `<div class="tt-enchants"><div class="tt-enchant-label">Enchants</div>${slot.enchants.map(e => `<div class="tt-enchant-item">${e}</div>`).join('')}</div>`
+        : '';
+      const missingHtml = isMissing
+        ? `<div class="tt-missing-warning">⚠ SLOT EMPTY — This is the critical missing component. Build harness-proposer.py to unlock the outer optimization loop.</div>`
+        : '';
+
+      tooltip.innerHTML = `
+        <div class="tt-slot-label">${slot.label}</div>
+        <div class="tt-name tt-quality-${slot.quality}">${slot.icon} ${slot.name}</div>
+        <div class="tt-ilvl">Item Level <strong>${isMissing ? '—' : slot.ilvl}</strong> &nbsp;·&nbsp; <span style="color:${qualityColor(slot.quality)};text-transform:capitalize">${slot.quality}</span></div>
+        <hr class="tt-divider">
+        <div class="tt-path">${slot.path}</div>
+        <div class="tt-desc">${slot.desc}</div>
+        ${slot.stats.length ? `<div class="tt-stats">${statsHtml}</div>` : ''}
+        ${enchantsHtml}
+        ${missingHtml}
+      `;
+      tooltip.classList.add('show');
+      positionTooltip(event);
+    }
+
+    function positionTooltip(event) {
+      const margin = 16;
+      const tw = 280;
+      const th = tooltip.offsetHeight;
+      let x = event.clientX + margin;
+      let y = event.clientY + margin;
+      if (x + tw > window.innerWidth - margin) x = event.clientX - tw - margin;
+      if (y + th > window.innerHeight - margin) y = event.clientY - th - margin;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top  = y + 'px';
+    }
+
+    function hideTooltip() {
+      tooltip.classList.remove('show');
+    }
+
+    document.addEventListener('mousemove', e => {
+      if (tooltip.classList.contains('show')) positionTooltip(e);
+    });
+
+    // ——————————————————————————————————————————————
+    // BUILD GEAR SLOT ELEMENT
+    // ——————————————————————————————————————————————
+    function buildSlotEl(slot) {
+      const div = document.createElement('div');
+      div.className = `gear-slot slot-${slot.quality} quality-${slot.quality}`;
+      div.dataset.label = slot.label;
+
+      const isMissing = slot.quality === 'missing';
+      const ilvlText  = isMissing ? '<span style="color:var(--grey)">—</span>' : `<strong>${slot.ilvl}</strong>`;
+
+      div.innerHTML = `
+        <div class="slot-label">${slot.label}</div>
+        <div class="slot-body">
+          <div class="slot-icon">${slot.icon}</div>
+          <div class="slot-info">
+            <div class="slot-name">${slot.name}</div>
+            <div class="slot-ilvl-row">
+              <div class="slot-ilvl">${ilvlText}</div>
+              <div class="quality-gem gem-${slot.quality}"></div>
+            </div>
+          </div>
+        </div>
+        ${isMissing ? '<div class="slot-missing-x"></div>' : ''}
+      `;
+
+      // Hover tooltip
+      div.addEventListener('mouseenter', e => showTooltip(slot, e));
+      div.addEventListener('mouseleave', hideTooltip);
+
+      // Click pulse
+      div.addEventListener('click', () => {
+        div.classList.remove('pulse');
+        void div.offsetWidth; // reflow
+        div.classList.add('pulse');
+      });
+
+      return div;
+    }
+
+    // ——————————————————————————————————————————————
+    // RENDER CHARACTER FRAME
+    // ——————————————————————————————————————————————
+    function renderFrame() {
+      const leftCol   = document.getElementById('slots-left');
+      const rightCol  = document.getElementById('slots-right');
+      const bottomRow = document.getElementById('slots-bottom');
+
+      SLOTS.forEach(slot => {
+        const el = buildSlotEl(slot);
+        if      (slot.col === 'left')   leftCol.appendChild(el);
+        else if (slot.col === 'right')  rightCol.appendChild(el);
+        else if (slot.col === 'bottom') bottomRow.appendChild(el);
+      });
+
+      // Compute stat bar values
+      const equipped  = SLOTS.filter(s => s.quality !== 'missing');
+      const missing   = SLOTS.filter(s => s.quality === 'missing');
+      const legendary = equipped.filter(s => s.quality === 'legendary');
+      const epic      = equipped.filter(s => s.quality === 'epic');
+      const rare      = equipped.filter(s => s.quality === 'rare');
+      const avgIlvl   = Math.round(equipped.reduce((a, s) => a + s.ilvl, 0) / equipped.length);
+      const maxIlvl   = Math.max(...equipped.map(s => s.ilvl));
+
+      document.getElementById('sb-equipped').textContent = equipped.length;
+      document.getElementById('sb-missing').textContent  = missing.length;
+      document.getElementById('sb-legendary').textContent = legendary.length;
+      document.getElementById('sb-epic').textContent      = epic.length;
+      document.getElementById('sb-rare').textContent      = rare.length;
+      document.getElementById('sb-avgilvl').textContent   = avgIlvl;
+      document.getElementById('sb-max').textContent       = maxIlvl;
+      document.getElementById('avg-ilvl').textContent     = avgIlvl;
+    }
+
+    // ——————————————————————————————————————————————
+    // BUILD NEURAL NET SVG
+    // ——————————————————————————————————————————————
+    function buildNeuralNet() {
+      const svg = document.getElementById('neural-net-svg');
+      const NS  = 'http://www.w3.org/2000/svg';
+      const cx = 120, cy = 120;
+
+      function mkEl(tag, attrs) {
+        const el = document.createElementNS(NS, tag);
+        Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+        return el;
+      }
+
+      // Background circle glow
+      svg.appendChild(mkEl('circle', {cx, cy, r:'88', fill:'none', stroke:'rgba(200,168,75,0.04)', 'stroke-width':'60'}));
+
+      // Orbital rings
+      const ring1 = mkEl('g', {class:'nn-ring-1'});
+      ring1.appendChild(mkEl('circle', {cx, cy, r:'72', fill:'none', stroke:'rgba(200,168,75,0.12)', 'stroke-width':'1', 'stroke-dasharray':'4 8'}));
+      // Nodes on ring1
+      const r1Angles = [0, 60, 120, 180, 240, 300];
+      r1Angles.forEach((deg, i) => {
+        const rad = deg * Math.PI / 180;
+        const nx = cx + 72 * Math.cos(rad);
+        const ny = cy + 72 * Math.sin(rad);
+        const node = mkEl('circle', {cx:nx, cy:ny, r:'4', fill:'rgba(200,168,75,0.6)', stroke:'rgba(200,168,75,0.3)', 'stroke-width':'1'});
+        node.style.animation = `nodeGlow ${1.5 + i * 0.25}s ease-in-out infinite`;
+        ring1.appendChild(node);
+      });
+      svg.appendChild(ring1);
+
+      const ring2 = mkEl('g', {class:'nn-ring-2'});
+      ring2.appendChild(mkEl('circle', {cx, cy, r:'50', fill:'none', stroke:'rgba(163,53,238,0.15)', 'stroke-width':'1', 'stroke-dasharray':'3 6'}));
+      const r2Angles = [30, 90, 150, 210, 270, 330];
+      r2Angles.forEach((deg, i) => {
+        const rad = deg * Math.PI / 180;
+        const nx = cx + 50 * Math.cos(rad);
+        const ny = cy + 50 * Math.sin(rad);
+        const node = mkEl('circle', {cx:nx, cy:ny, r:'3', fill:'rgba(163,53,238,0.7)', stroke:'rgba(163,53,238,0.3)', 'stroke-width':'1'});
+        node.style.animation = `nodeGlow ${2 + i * 0.2}s ease-in-out infinite`;
+        ring2.appendChild(node);
+      });
+      svg.appendChild(ring2);
+
+      const ring3 = mkEl('g', {class:'nn-ring-3'});
+      ring3.appendChild(mkEl('circle', {cx, cy, r:'32', fill:'none', stroke:'rgba(0,112,221,0.12)', 'stroke-width':'1', 'stroke-dasharray':'2 5'}));
+      const r3Angles = [0, 90, 180, 270];
+      r3Angles.forEach((deg, i) => {
+        const rad = deg * Math.PI / 180;
+        const nx = cx + 32 * Math.cos(rad);
+        const ny = cy + 32 * Math.sin(rad);
+        const node = mkEl('circle', {cx:nx, cy:ny, r:'3', fill:'rgba(0,112,221,0.7)', stroke:'rgba(0,112,221,0.3)', 'stroke-width':'1'});
+        node.style.animation = `nodeGlow ${1.8 + i * 0.3}s ease-in-out infinite`;
+        ring3.appendChild(node);
+      });
+      svg.appendChild(ring3);
+
+      // Connection lines from ring1 to ring2 nodes (cross-connections)
+      const connPairs = [[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[0,3],[2,5]];
+      connPairs.forEach(([a, b]) => {
+        const degA = r1Angles[a] * Math.PI / 180;
+        const degB = r2Angles[b] * Math.PI / 180;
+        const x1 = cx + 72 * Math.cos(degA);
+        const y1 = cy + 72 * Math.sin(degA);
+        const x2 = cx + 50 * Math.cos(degB);
+        const y2 = cy + 50 * Math.sin(degB);
+        const line = mkEl('line', {
+          x1, y1, x2, y2,
+          stroke:'rgba(200,168,75,0.15)', 'stroke-width':'0.5',
+          'stroke-dasharray':'4 4'
+        });
+        line.style.animation = `lineFlow ${2 + Math.random() * 2}s ease-in-out infinite`;
+        svg.appendChild(line);
+      });
+
+      // Core glow layers
+      svg.appendChild(mkEl('circle', {cx, cy, r:'18', fill:'rgba(200,168,75,0.08)', stroke:'none', class:'nn-core'}));
+      svg.appendChild(mkEl('circle', {cx, cy, r:'12', fill:'rgba(200,168,75,0.15)', stroke:'rgba(200,168,75,0.3)', 'stroke-width':'1', class:'nn-core'}));
+      svg.appendChild(mkEl('circle', {cx, cy, r:'7',  fill:'rgba(200,168,75,0.55)', stroke:'rgba(200,168,75,0.8)', 'stroke-width':'1.5', class:'nn-core'}));
+
+      // Center label
+      const text = mkEl('text', {x:cx, y:cy+36, 'text-anchor':'middle', fill:'rgba(200,168,75,0.5)', 'font-size':'8', 'font-family':'Cinzel, serif', 'letter-spacing':'2'});
+      text.textContent = 'CLAUDE';
+      svg.appendChild(text);
+    }
+
+    // ——————————————————————————————————————————————
+    // BUILD SCORING TABLE (Tab 2)
+    // ——————————————————————————————————————————————
+    function renderScoringTable() {
+      const tbody = document.getElementById('score-tbody');
+      if (!tbody) return;
+
+      SLOTS.forEach(slot => {
+        const isMissing = slot.quality === 'missing';
+        const sb = slot.scoreBreakdown;
+        const tr = document.createElement('tr');
+        if (isMissing) tr.classList.add('missing-row');
+
+        const matStr  = isMissing ? '—' : sb.maturity;
+        const covStr  = isMissing ? '—' : sb.coverage;
+        const intStr  = isMissing ? '—' : sb.integration;
+        const ilvlStr = isMissing ? '—' : slot.ilvl;
+
+        const ilvlColor = (() => {
+          if (isMissing) return 'var(--grey)';
+          if (slot.quality === 'legendary') return 'var(--gold-bright)';
+          if (slot.quality === 'epic')      return 'var(--epic)';
+          return 'var(--rare)';
+        })();
+
+        const qbClass = `qb-${slot.quality}`;
+
+        tr.innerHTML = `
+          <td class="td-slot">${slot.label}</td>
+          <td class="td-component quality-${slot.quality}"><span class="slot-name">${slot.icon} ${slot.name}</span></td>
+          <td class="td-score-val ${isMissing ? 'dash' : ''}">${matStr}</td>
+          <td class="td-score-val ${isMissing ? 'dash' : ''}">${covStr}</td>
+          <td class="td-score-val ${isMissing ? 'dash' : ''}">${intStr}</td>
+          <td class="td-ilvl" style="color:${ilvlColor}">${ilvlStr}</td>
+          <td><span class="quality-badge ${qbClass}">${slot.quality}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // ——————————————————————————————————————————————
+    // UPGRADE PATH DATA
+    // ——————————————————————————————————————————————
+    const UPGRADE_PATHS = [
+      {
+        label:'HEAD', icon:'🧠', name:'Memory System',
+        quality:'legendary', isMax: true,
+        sustain: [
+          'Compile lessons every 12h',
+          'Prune stale memories monthly',
+          'Add typed memory categories'
+        ]
+      },
+      {
+        label:'NECK', icon:'🔗', name:'Context7 MCP',
+        quality:'epic', fromTier:'epic', toTier:'legendary', isMax: false,
+        reqs: [
+          'Add project-specific library override list to CLAUDE.md',
+          'Build Context7 result caching layer to avoid redundant fetches',
+          'Document 10 confirmed hallucination-prevention wins'
+        ],
+        effort: 'Medium'
+      },
+      {
+        label:'SHOULDERS', icon:'⚔️', name:'Skills Library',
+        quality:'legendary', isMax: true,
+        sustain: [
+          'Run skill-creator quarterly',
+          'Enforce Unix composability on all new skills',
+          'Document skill chains'
+        ]
+      },
+      {
+        label:'BACK', icon:'📜', name:'Traces Store',
+        quality:'epic', fromTier:'epic', toTier:'legendary', isMax: false,
+        reqs: [
+          'Build harness-proposer.py to actually consume traces in optimization loop',
+          'Add structured trace schema validation',
+          'Achieve >50 traces across 5+ distinct task types'
+        ],
+        effort: 'High',
+        blockedBy: 'HANDS slot'
+      },
+      {
+        label:'CHEST', icon:'📋', name:'CLAUDE.md Rules',
+        quality:'legendary', isMax: true,
+        sustain: [
+          'Quarterly rule audit to remove stale patterns',
+          'Add version header to CLAUDE.md'
+        ]
+      },
+      {
+        label:'SHIRT', icon:'🪝', name:'Session Hooks',
+        quality:'rare', fromTier:'rare', toTier:'epic', isMax: false,
+        reqs: [
+          'Add PreToolUse hook for security validation',
+          'Wire PostToolUse to trace-writer.py for every tool call',
+          'Add hook health monitoring (fail-safe if hook script errors)'
+        ],
+        effort: 'Medium'
+      },
+      {
+        label:'WRIST', icon:'📚', name:'Lessons Vault',
+        quality:'legendary', isMax: true,
+        sustain: [
+          'Enforce 12h compilation schedule',
+          'Add cross-project tagging system'
+        ]
+      },
+      {
+        label:'HANDS', icon:'🤖', name:'Harness Proposer',
+        quality:'rare', fromTier:'rare', toTier:'epic', isMax: false, isCritical: false,
+        reqs: [
+          'Run ≥3 eval battery iterations and score candidates (establish Pareto baseline)',
+          'Upgrade signal detection to use LLM synthesis instead of keyword heuristics',
+          'Add Phase 2 automated eval support (CROSS-1 already deployed)'
+        ],
+        effort: 'Medium'
+      },
+      {
+        label:'RING 1', icon:'📊', name:'Pareto Frontier',
+        quality:'epic', fromTier:'epic', toTier:'legendary', isMax: false,
+        reqs: [
+          'Build automated Pareto plot generation (HTML visual)',
+          'Add cross-run comparison API',
+          'Connect to harness-proposer.py as primary optimization target'
+        ],
+        effort: 'High'
+      },
+      {
+        label:'RING 2', icon:'💾', name:'Version Snapshots',
+        quality:'rare', fromTier:'rare', toTier:'epic', isMax: false,
+        reqs: [
+          'Add auto-diff between versions (what changed in CLAUDE.md / settings.json)',
+          'Tag versions with performance outcomes',
+          'Build version rollback CLI command'
+        ],
+        effort: 'Medium'
+      },
+      {
+        label:'WAIST', icon:'🔄', name:'QA Loop',
+        quality:'epic', fromTier:'epic', toTier:'legendary', isMax: false,
+        reqs: [
+          'Build custom agent specialization profiles per project type (stored in SecondBrain)',
+          'Add automated regression detection between QA rounds',
+          'Wire QA outcomes to Lessons Vault'
+        ],
+        effort: 'Medium'
+      },
+      {
+        label:'LEGS', icon:'🧭', name:'SecondBrain Vault',
+        quality:'legendary', isMax: true,
+        sustain: [
+          'Keep symlinks current',
+          'Enforce compilation schedule'
+        ]
+      },
+      {
+        label:'FEET', icon:'⚡', name:'FastAPI / Frontend Patterns',
+        quality:'rare', fromTier:'rare', toTier:'epic', isMax: false,
+        reqs: [
+          'Add async patterns coverage (to_thread, gather shutdown, locking)',
+          'Document 5 confirmed pattern reuses with before/after comparison',
+          'Add TypeScript patterns section'
+        ],
+        effort: 'Low'
+      },
+      {
+        label:'TRINKET 1', icon:'🌐', name:'Tavily MCP',
+        quality:'epic', fromTier:'epic', toTier:'legendary', isMax: false,
+        reqs: [
+          'Build TavilySource class with rate limiting + dedup',
+          'Document extract/crawl/map use cases with worked examples',
+          'Integrate with deep-research skill output format'
+        ],
+        effort: 'Medium'
+      },
+      {
+        label:'TRINKET 2', icon:'🌉', name:'Bridges / MCP Servers',
+        quality:'rare', fromTier:'rare', toTier:'epic', isMax: false,
+        reqs: [
+          'Fix Gmail/Calendar bridge stability (currently partial)',
+          'Add MCP health check on session start',
+          'Document which bridges are critical path vs. optional'
+        ],
+        effort: 'Low-Medium'
+      },
+      {
+        label:'OFF-HAND', icon:'🔬', name:'Deep Research Skill',
+        quality:'epic', fromTier:'epic', toTier:'legendary', isMax: false,
+        reqs: [
+          'Add automated source credibility scoring to output format',
+          'Build research cache (avoid re-fetching same URLs)',
+          'Wire research outputs to SecondBrain Vault automatically'
+        ],
+        effort: 'Medium'
+      },
+      {
+        label:'MAIN-HAND', icon:'🗡️', name:'Implementation Planner',
+        quality:'legendary', isMax: true,
+        sustain: [
+          'Run after every major feature to bank lessons'
+        ]
+      },
+      {
+        label:'OFF-HAND WEAPON', icon:'✅', name:'Feedback Loop Closure',
+        quality:'epic', fromTier:'epic', toTier:'legendary', isMax: false,
+        reqs: [
+          'Build regression detector that checks if past feedback violations recur',
+          'Add empirical closure rate metric (% of feedback memories that haven\'t recurred in 30 days)',
+          'Wire to Tests tab'
+        ],
+        effort: 'Medium'
+      }
+    ];
+
+    // ——————————————————————————————————————————————
+    // RENDER UPGRADE CARDS (Tab 3)
+    // ——————————————————————————————————————————————
+    function effortClass(effort) {
+      if (!effort) return '';
+      const e = effort.toLowerCase();
+      if (e.startsWith('low'))    return 'effort-low';
+      if (e === 'medium')         return 'effort-medium';
+      if (e.startsWith('high'))   return 'effort-high';
+      return 'effort-medium';
+    }
+
+    function tierBadgeClass(tier) {
+      if (tier === 'legendary') return 'tb-legendary';
+      if (tier === 'epic')      return 'tb-epic';
+      if (tier === 'rare')      return 'tb-rare';
+      if (tier === 'missing')   return 'tb-missing';
+      return 'tb-rare';
+    }
+
+    function renderUpgradeCards() {
+      const grid = document.getElementById('upgrade-grid');
+      if (!grid) return;
+
+      UPGRADE_PATHS.forEach(up => {
+        const card = document.createElement('div');
+        const classes = ['upgrade-card'];
+        if (up.isMax) classes.push('max-tier');
+        if (up.isCritical) classes.push('critical');
+        card.className = classes.join(' ');
+
+        // Header
+        const headerHtml = `
+          <div class="upgrade-card-header">
+            <div class="uc-icon">${up.icon}</div>
+            <div class="uc-meta">
+              <div class="uc-slot-label">${up.label}</div>
+              <div class="uc-item-name qc-${up.quality}">${up.name}</div>
+            </div>
+          </div>
+        `;
+
+        // Tier transition
+        let tierHtml = '';
+        if (up.isMax) {
+          tierHtml = `
+            <div class="tier-transition">
+              <span class="tier-badge tb-legendary">Legendary</span>
+              <span class="tier-arrow">→</span>
+              <span class="tier-badge tb-max">Max Tier</span>
+            </div>
+          `;
+        } else {
+          tierHtml = `
+            <div class="tier-transition">
+              <span class="tier-badge ${tierBadgeClass(up.fromTier)}">${up.fromTier.charAt(0).toUpperCase() + up.fromTier.slice(1)}</span>
+              <span class="tier-arrow">→</span>
+              <span class="tier-badge ${tierBadgeClass(up.toTier)}">${up.toTier.charAt(0).toUpperCase() + up.toTier.slice(1)}</span>
+            </div>
+          `;
+        }
+
+        // Body content
+        let bodyHtml = '';
+        if (up.isMax) {
+          bodyHtml = `
+            <div class="uc-reqs-label">Sustain With</div>
+            <ul class="uc-sustain-list">
+              ${up.sustain.map(s => `<li class="uc-sustain-item">${s}</li>`).join('')}
+            </ul>
+          `;
+        } else {
+          const blockedNote = up.blockedBy
+            ? `<div style="font-size:0.65rem;color:var(--red);margin-top:4px;margin-bottom:8px;padding:4px 8px;background:rgba(255,32,32,0.08);border-radius:2px;">⚠ Blocked by: ${up.blockedBy}</div>`
+            : '';
+          bodyHtml = `
+            <div class="uc-reqs-label">Requirements to Upgrade</div>
+            <ul class="uc-req-list">
+              ${up.reqs.map((r, i) => `<li class="uc-req-item"><span class="uc-req-num">${i+1}.</span><span>${r}</span></li>`).join('')}
+            </ul>
+            ${blockedNote}
+          `;
+        }
+
+        // Footer
+        let footerHtml = '';
+        if (up.isMax) {
+          footerHtml = `
+            <div class="uc-footer">
+              <span class="effort-badge effort-max">Max Tier</span>
+            </div>
+          `;
+        } else {
+          const critBadge = up.isCritical
+            ? `<span class="critical-badge">CRITICAL</span>`
+            : '';
+          footerHtml = `
+            <div class="uc-footer">
+              <span class="effort-badge ${effortClass(up.effort)}">Effort: ${up.effort}</span>
+              ${critBadge}
+            </div>
+          `;
+        }
+
+        card.innerHTML = headerHtml + tierHtml + bodyHtml + footerHtml;
+        grid.appendChild(card);
+      });
+    }
+
+    // ——————————————————————————————————————————————
+    // INIT
+    // ——————————————————————————————————————————————
+    renderFrame();
+    buildNeuralNet();
+    renderScoringTable();
+    renderUpgradeCards();
+
+    // ——————————————————————————————————————————————
+    // TAB 4: SET BONUSES
+    // ——————————————————————————————————————————————
+    const SET_BONUSES = [
+      {
+        id: 'memory-trinity',
+        name: 'The Memory Trinity',
+        pieces: 3,
+        dominantTier: 'legendary',
+        slots: [
+          { icon: '🧠', label: 'HEAD', name: 'Memory System' },
+          { icon: '📚', label: 'WRIST', name: 'Lessons Vault' },
+          { icon: '🧭', label: 'LEGS', name: 'SecondBrain Vault' }
+        ],
+        bonusName: 'Cross-Session Intelligence',
+        bonusStat: 28,
+        bonusDesc: 'When all three memory layers are active, lessons from any project automatically surface in relevant conversations. The vault indexes the lessons, the wrist stores them as patterns, and the helm recalls them at session start. No manual cross-referencing needed.',
+        combinedBoosts: [
+          { label: 'Loop Closure', val: '+8%', positive: true },
+          { label: 'Regression Risk', val: '−45%', positive: true }
+        ],
+        locked5th: null
+      },
+      {
+        id: 'optimization-engine',
+        name: 'The Optimization Engine',
+        pieces: 4,
+        dominantTier: 'epic',
+        slots: [
+          { icon: '📜', label: 'BACK', name: 'Traces Store' },
+          { icon: '📊', label: 'RING 1', name: 'Pareto Frontier' },
+          { icon: '💾', label: 'RING 2', name: 'Version Snapshots' },
+          { icon: '✅', label: 'OFF-HAND WEAPON', name: 'Feedback Loop Closure' }
+        ],
+        bonusName: 'Harness Self-Awareness',
+        bonusStat: 35,
+        bonusDesc: 'The four components that measure the harness watching itself. Traces record what happened, Pareto tracks what was better, Snapshots preserve what changed, Feedback verifies lessons landed. Together they form a closed observability loop. MISSING: Harness Proposer (HANDS) would unlock the 5th-piece "Full Outer Loop" bonus.',
+        combinedBoosts: [
+          { label: 'Trace Fidelity', val: '+12%', positive: true },
+          { label: 'Version Confidence', val: '+19%', positive: true }
+        ],
+        locked5th: {
+          label: 'Requires: Harness Proposer (HANDS)',
+          bonus: '+91 Autonomous Optimization',
+          name: 'Full Outer Loop'
+        }
+      },
+      {
+        id: 'research-stack',
+        name: 'The Research Stack',
+        pieces: 3,
+        dominantTier: 'epic',
+        slots: [
+          { icon: '🔗', label: 'NECK', name: 'Context7 MCP' },
+          { icon: '🌐', label: 'TRINKET 1', name: 'Tavily MCP' },
+          { icon: '🔬', label: 'OFF-HAND', name: 'Deep Research Skill' }
+        ],
+        bonusName: 'Intelligence Gathering',
+        bonusStat: 22,
+        bonusDesc: 'Context7 covers library/framework docs, Tavily covers real-time web signals, Deep Research synthesizes both with citation tracking. Together they ensure no decision is made from stale training data. Every output is grounded in current reality.',
+        combinedBoosts: [
+          { label: 'Hallucination Rate', val: '−67%', positive: true },
+          { label: 'Source Coverage', val: '+41%', positive: true }
+        ],
+        locked5th: null
+      },
+      {
+        id: 'execution-core',
+        name: 'The Execution Core',
+        pieces: 4,
+        dominantTier: 'legendary',
+        slots: [
+          { icon: '📋', label: 'CHEST', name: 'CLAUDE.md Rules' },
+          { icon: '⚔️', label: 'SHOULDERS', name: 'Skills Library' },
+          { icon: '🗡️', label: 'MAIN-HAND', name: 'Implementation Planner' },
+          { icon: '🔄', label: 'WAIST', name: 'QA Loop' }
+        ],
+        bonusName: 'Deployment Confidence',
+        bonusStat: 44,
+        bonusDesc: 'The four components that turn ideas into shipped code. Rules constrain the solution space, Skills provide execution units, Implementation plans the architecture, QA verifies correctness before merge. A task touched by all four has been defined, built, reviewed, and verified.',
+        combinedBoosts: [
+          { label: 'Deployment Confidence', val: '+44%', positive: true },
+          { label: 'Bug Escape Rate', val: '−72%', positive: true }
+        ],
+        locked5th: null
+      },
+      {
+        id: 'signal-layer',
+        name: 'The Signal Layer',
+        pieces: 2,
+        dominantTier: 'rare',
+        partial: true,
+        slots: [
+          { icon: '🪝', label: 'SHIRT', name: 'Session Hooks' },
+          { icon: '🌉', label: 'TRINKET 2', name: 'Bridges / MCP Servers' }
+        ],
+        bonusName: 'Harness Observability',
+        bonusStat: 15,
+        bonusDesc: 'Hooks fire at every tool boundary, Bridges route signals to external systems. Together they mean the harness can be observed from outside and can observe itself in real time. Currently PARTIAL due to bridge instability.',
+        combinedBoosts: [
+          { label: 'Observability', val: '+31%', positive: true }
+        ],
+        locked5th: null,
+        partialWarning: 'Bridges are currently Rare/Partial — fix them to unlock full bonus'
+      }
+    ];
+
+    function tierColor(tier) {
+      if (tier === 'legendary') return 'var(--gold-bright)';
+      if (tier === 'epic')      return 'var(--epic)';
+      if (tier === 'rare')      return 'var(--rare)';
+      return 'var(--grey)';
+    }
+
+    function tierBorderColor(tier) {
+      if (tier === 'legendary') return 'rgba(200,168,75,0.5)';
+      if (tier === 'epic')      return 'rgba(255,128,0,0.5)';
+      if (tier === 'rare')      return 'rgba(0,112,221,0.45)';
+      return 'rgba(85,85,85,0.4)';
+    }
+
+    function tierGlowColor(tier) {
+      if (tier === 'legendary') return 'rgba(200,168,75,0.12)';
+      if (tier === 'epic')      return 'rgba(255,128,0,0.08)';
+      if (tier === 'rare')      return 'rgba(0,112,221,0.08)';
+      return 'rgba(85,85,85,0.05)';
+    }
+
+    function renderSetBonuses() {
+      const container = document.getElementById('set-bonuses-container');
+      if (!container) return;
+
+      SET_BONUSES.forEach(set => {
+        const borderCol = tierBorderColor(set.dominantTier);
+        const glowCol   = tierGlowColor(set.dominantTier);
+        const textCol   = tierColor(set.dominantTier);
+        const isLeg     = set.dominantTier === 'legendary';
+
+        // Tier badge
+        const tierLabel = set.dominantTier.charAt(0).toUpperCase() + set.dominantTier.slice(1);
+        const qbClass   = `qb-${set.dominantTier}`;
+
+        // Slots HTML
+        const slotsHtml = set.slots.map(s => `
+          <div class="sb-slot-item">
+            <span class="sb-slot-icon">${s.icon}</span>
+            <span class="sb-slot-label-sm">${s.label}</span>
+            <span class="sb-slot-name">${s.name}</span>
+          </div>
+        `).join('');
+
+        // Boosts HTML
+        const boostsHtml = set.combinedBoosts.map(b => `
+          <div class="sb-boost-item">
+            <span class="sb-boost-label">${b.label}</span>
+            <span class="sb-boost-val" style="color:${b.positive ? 'var(--uncommon)' : 'var(--red)'}">${b.val}</span>
+          </div>
+        `).join('');
+
+        // Locked 5th piece
+        const locked5thHtml = set.locked5th ? `
+          <div class="sb-locked-bonus">
+            <div class="sb-locked-header">
+              <span class="sb-lock-icon">🔒</span>
+              <span class="sb-locked-title">5th Piece Bonus Locked</span>
+            </div>
+            <div class="sb-locked-name">${set.locked5th.name}</div>
+            <div class="sb-locked-req">${set.locked5th.label}</div>
+            <div class="sb-locked-stat">${set.locked5th.bonus}</div>
+          </div>
+        ` : '';
+
+        // Partial warning
+        const partialHtml = set.partialWarning ? `
+          <div class="sb-partial-warning">
+            <span>⚠</span> ${set.partialWarning}
+          </div>
+        ` : '';
+
+        // Stat bar fill (out of 50 max)
+        const fillPct = Math.min(100, (set.bonusStat / 50) * 100);
+
+        const card = document.createElement('div');
+        card.className = 'sb-card' + (isLeg ? ' sb-card-legendary' : '');
+        card.style.cssText = `border-color: ${borderCol}; background: linear-gradient(135deg, ${glowCol} 0%, var(--panel) 100%);`;
+
+        card.innerHTML = `
+          <div class="sb-card-header">
+            <div class="sb-card-title-row">
+              <div class="sb-card-name" style="color:${textCol}">${set.name}</div>
+              <div class="sb-badges">
+                <span class="quality-badge ${qbClass}">${tierLabel}</span>
+                <span class="sb-piece-badge">${set.pieces}-Piece${set.partial ? ' (Partial)' : ''}</span>
+              </div>
+            </div>
+          </div>
+          <div class="sb-card-body">
+            <div class="sb-slots-section">
+              <div class="sb-section-label">Set Components</div>
+              <div class="sb-slots-list">${slotsHtml}</div>
+            </div>
+            <div class="sb-bonus-section">
+              <div class="sb-section-label">Set Bonus</div>
+              <div class="sb-bonus-name" style="color:${textCol}">+${set.bonusStat} ${set.bonusName}</div>
+              <div class="sb-stat-bar-wrap">
+                <div class="sb-stat-bar-track">
+                  <div class="sb-stat-bar-fill" style="width:${fillPct}%; background: ${textCol}; box-shadow: 0 0 8px ${textCol};"></div>
+                </div>
+              </div>
+              <div class="sb-bonus-desc">${set.bonusDesc}</div>
+              <div class="sb-boosts">${boostsHtml}</div>
+              ${partialHtml}
+              ${locked5thHtml}
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    // ——————————————————————————————————————————————
+    // TAB 5: GAPS
+    // ——————————————————————————————————————————————
+    const GAPS_DATA = {
+      critical: [],
+      partial: [
+        {
+          title: 'Bridges / MCP Servers (TRINKET 2)',
+          tag: 'PARTIAL',
+          issue: 'Gmail and Google Calendar MCP bridges are unstable. Authentication drops silently.',
+          risk: 'If bridges fail mid-session, the harness fragments — memory and external signals stop talking to each other.',
+          fix: '✓ mcp-health-check.sh built and wired as SessionStart hook. Checks all MCP server binaries on every session open and logs degraded bridges. Reconnect logic still manual.'
+        },
+        {
+          title: 'Version Snapshots → Performance Linkage (RING 2)',
+          tag: 'PARTIAL',
+          issue: 'Versions are snapshotted but not tagged with performance outcomes. Can\'t answer "which harness version performed best?"',
+          risk: 'The Pareto frontier data exists but can\'t be matched to specific harness versions.',
+          fix: '✓ version-outcome-query.py built: --list (table with scores), --best (top frontier candidate + matching version), --diff V1 V2, --tag VID score. Linkage works via CLAUDE.md content similarity matching.'
+        },
+        {
+          title: 'Tests Tab — Baseline Run Recorded (2026-04-03)',
+          tag: 'PARTIAL',
+          issue: 'First empirical test run logged (v1.1-gap-fixes-audit). Baseline candidate 20260401_122216_000 scored with 70 attached sessions. Proposer iteration 1 complete, candidate 20260403_103836_000 serialized.',
+          risk: 'Need 3 scored candidates for baseline median before composite_quality scores unlock. Currently at 1/3.',
+          fix: '✓ Test run logged 2026-04-03: Loop Closure 88%, Trace Fidelity 96%, Memory Persistence 95%, Context Fidelity 96%, Missing 0. Run 2 more proposer iterations to establish scoring baseline.'
+        },
+        {
+          title: 'Feedback Loop Closure — Unverified Closure Rate',
+          tag: 'PARTIAL',
+          issue: 'Feedback memories are written but not automatically checked for regression. A pattern could re-occur and go unnoticed.',
+          risk: '30% of feedback memories may have already recurred without detection.',
+          fix: '✓ feedback-regression-detector.py built: scans last N days of session logs for keyword patterns matching feedback_*.md rules, outputs closure_rate_estimate. Run: python3 ~/.claude/meta-harness/scripts/feedback-regression-detector.py --days 30'
+        }
+      ],
+      structural: [
+        {
+          title: 'Context Scale vs. Cost',
+          issue: 'Meta-Harness uses 10 MTok per iteration. At current Claude API pricing, this is ~$15-30 per optimization iteration. Without careful batching, the outer loop could be expensive.',
+          mitigation: 'Start with 5-iteration budget per run, focus on highest-value harness components first.'
+        },
+        {
+          title: 'Trace Store Unbounded Growth',
+          issue: '~/.claude/traces/ grows indefinitely. No pruning or archival strategy defined.',
+          mitigation: '✓ archive-traces.sh built: keeps last 90 days hot, moves older sessions to traces/archive/. Supports --dry-run. Run manually or add to cron.'
+        },
+        {
+          title: 'Lessons Vault Staleness',
+          issue: 'lessons-staleness-check.sh referenced _meta/cross-project-lessons.md but vault uses 07-lessons/ structure. Script existed but pointed to wrong path.',
+          mitigation: '✓ Path fixed 2026-04-03: _meta/ → 07-lessons/. Python3 PATH guard added (export PATH="/usr/local/bin:/usr/bin:/bin:$PATH") for non-interactive shell compatibility. compile-lessons.sh confirmed executable.'
+        },
+        {
+          title: 'Single Point of Failure — CLAUDE.md',
+          issue: 'All harness behavior flows from one file. If CLAUDE.md becomes corrupted or loses entries, harness behavior degrades silently.',
+          mitigation: '✓ claude-md-validator.sh built and wired as SessionStart hook. Checks: exists → >500 bytes → key sections present (Global Instructions, Context7, Auto-Activation) → valid UTF-8. Auto-recovers from harness-versions/ backup if file is missing.'
+        },
+        {
+          title: 'API Key Exposure (RESOLVED 2026-04-03)',
+          issue: 'OpenAI key sk-proj-S0yiX… was hardcoded in ~/.claude/settings.json env block.',
+          mitigation: '✓ Resolved: env block removed from settings.json (chmod 600). Key moved to ~/.zshenv (chmod 600). All candidate snapshots scanned — clean. serialize-candidate.sh already had jq del(.env) guard. Read(~/.zshenv) deny rule in permissions.'
+        },
+        {
+          title: 'ADR Coverage (RESOLVED 2026-04-03)',
+          issue: 'Only 3 of ~10 architecture decisions documented. Hook architecture, agent memory strategy, and security policy had no ADR.',
+          mitigation: '✓ Resolved: ADR-004 (hook system architecture), ADR-005 (agent memory architecture), ADR-006 (security policy) written to 05-decisions/. MOC-Decisions.md updated.'
+        }
+      ]
+    };
+
+    function renderGaps() {
+      // Critical
+      const critContainer = document.getElementById('gaps-critical-list');
+      if (critContainer) {
+        GAPS_DATA.critical.forEach((gap, idx) => {
+          const el = document.createElement('div');
+          el.className = 'gap-item gap-critical';
+          el.innerHTML = `
+            <div class="gap-header">
+              <div class="gap-title-row">
+                <span class="gap-num">GAP ${idx + 1}</span>
+                <span class="gap-title">${gap.title}</span>
+                <span class="gap-tag gap-tag-missing">${gap.tag}</span>
+              </div>
+              <div class="gap-severity">Severity: <strong style="color:var(--red)">${gap.severity}</strong></div>
+            </div>
+            <div class="gap-field"><span class="gap-field-label">Impact:</span><span class="gap-field-val">${gap.impact}</span></div>
+            <div class="gap-field"><span class="gap-field-label">Blocked by:</span><span class="gap-field-val">${gap.blockedBy}</span></div>
+            <div class="gap-field"><span class="gap-field-label">Est. effort:</span><span class="gap-field-val">${gap.effort}</span></div>
+            <div class="gap-action"><span class="gap-action-label">ACTION →</span> ${gap.action}</div>
+          `;
+          critContainer.appendChild(el);
+        });
+      }
+
+      // Partial
+      const partContainer = document.getElementById('gaps-partial-list');
+      if (partContainer) {
+        GAPS_DATA.partial.forEach((gap, idx) => {
+          const el = document.createElement('div');
+          el.className = 'gap-item gap-partial';
+          el.innerHTML = `
+            <div class="gap-header">
+              <div class="gap-title-row">
+                <span class="gap-num">PARTIAL ${idx + 1}</span>
+                <span class="gap-title">${gap.title}</span>
+                <span class="gap-tag gap-tag-partial">${gap.tag}</span>
+              </div>
+            </div>
+            <div class="gap-field"><span class="gap-field-label">Issue:</span><span class="gap-field-val">${gap.issue}</span></div>
+            <div class="gap-field"><span class="gap-field-label">Risk:</span><span class="gap-field-val">${gap.risk}</span></div>
+            <div class="gap-action"><span class="gap-action-label">FIX →</span> ${gap.fix}</div>
+          `;
+          partContainer.appendChild(el);
+        });
+      }
+
+      // Structural
+      const structContainer = document.getElementById('gaps-structural-list');
+      if (structContainer) {
+        GAPS_DATA.structural.forEach((gap, idx) => {
+          const el = document.createElement('div');
+          el.className = 'gap-item gap-structural';
+          el.innerHTML = `
+            <div class="gap-header">
+              <div class="gap-title-row">
+                <span class="gap-num">RISK ${idx + 1}</span>
+                <span class="gap-title">${gap.title}</span>
+              </div>
+            </div>
+            <div class="gap-field"><span class="gap-field-label">Issue:</span><span class="gap-field-val">${gap.issue}</span></div>
+            <div class="gap-action"><span class="gap-action-label" style="color:var(--rare)">MITIGATION →</span> ${gap.mitigation}</div>
+          `;
+          structContainer.appendChild(el);
+        });
+      }
+    }
+
+    // ——————————————————————————————————————————————
+    // TAB 6: TESTS
+    // ——————————————————————————————————————————————
+    const TESTS_STORAGE_KEY = 'harness_test_runs_v1';
+    const BASELINE_RUN = {
+      id: 'baseline-2026-04-01',
+      date: '2026-04-01',
+      version: 'v1.0-baseline',
+      loopClosure: 87,
+      traceFidelity: 94,
+      memoryPersistence: 91,
+      contextFidelity: 96,
+      feedbackRisk: 'LOW',
+      missingCount: 1,
+      notes: 'Initial assessment. Harness Proposer slot empty. All other components manually verified active.'
+    };
+
+    function getTestRuns() {
+      try {
+        const stored = localStorage.getItem(TESTS_STORAGE_KEY);
+        if (stored) {
+          const runs = JSON.parse(stored);
+          // Ensure baseline is always first
+          const hasBaseline = runs.some(r => r.id === BASELINE_RUN.id);
+          if (!hasBaseline) return [BASELINE_RUN, ...runs];
+          return runs;
+        }
+      } catch(e) {}
+      return [BASELINE_RUN];
+    }
+
+    function saveTestRuns(runs) {
+      try {
+        localStorage.setItem(TESTS_STORAGE_KEY, JSON.stringify(runs));
+      } catch(e) {}
+    }
+
+    function deltaHtml(current, previous, field) {
+      if (!previous) return '<span style="color:var(--gold-dim)">baseline</span>';
+      const diff = current[field] - previous[field];
+      if (diff === 0) return '<span style="color:var(--text-dim)">—</span>';
+      const sign = diff > 0 ? '↑' : '↓';
+      const col  = diff > 0 ? 'var(--uncommon)' : 'var(--red)';
+      return `<span style="color:${col}">${sign}${Math.abs(diff)}</span>`;
+    }
+
+    function riskColor(risk) {
+      if (risk === 'LOW')    return 'var(--uncommon)';
+      if (risk === 'MEDIUM') return 'var(--epic)';
+      if (risk === 'HIGH')   return 'var(--red)';
+      return 'var(--text)';
+    }
+
+    function renderTestTable(runs) {
+      const tbody = document.getElementById('test-runs-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      runs.forEach((run, idx) => {
+        const prev = idx > 0 ? runs[idx - 1] : null;
+        const isBaseline = idx === 0;
+
+        const metricsDelta = isBaseline
+          ? '<td colspan="4" style="text-align:center;color:var(--gold-dim);font-size:0.68rem">baseline</td>'
+          : `
+            <td style="text-align:center">${deltaHtml(run, prev, 'loopClosure')}</td>
+            <td style="text-align:center">${deltaHtml(run, prev, 'traceFidelity')}</td>
+            <td style="text-align:center">${deltaHtml(run, prev, 'memoryPersistence')}</td>
+            <td style="text-align:center">${deltaHtml(run, prev, 'contextFidelity')}</td>
+          `;
+
+        const tr = document.createElement('tr');
+        if (isBaseline) tr.style.background = 'rgba(200,168,75,0.04)';
+        tr.innerHTML = `
+          <td style="color:var(--text-dim);font-size:0.7rem;white-space:nowrap">${run.date}</td>
+          <td style="font-family:'Cinzel',serif;font-size:0.7rem;color:var(--gold)">${run.version}</td>
+          <td style="text-align:center;color:${run.loopClosure >= 95 ? 'var(--uncommon)' : run.loopClosure >= 80 ? 'var(--gold)' : 'var(--red)'}">${run.loopClosure}%</td>
+          <td style="text-align:center;color:${run.traceFidelity >= 95 ? 'var(--uncommon)' : run.traceFidelity >= 80 ? 'var(--gold)' : 'var(--red)'}">${run.traceFidelity}%</td>
+          <td style="text-align:center;color:${run.memoryPersistence >= 95 ? 'var(--uncommon)' : run.memoryPersistence >= 80 ? 'var(--gold)' : 'var(--red)'}">${run.memoryPersistence}%</td>
+          <td style="text-align:center;color:${run.contextFidelity >= 95 ? 'var(--uncommon)' : run.contextFidelity >= 80 ? 'var(--gold)' : 'var(--red)'}">${run.contextFidelity}%</td>
+          <td style="text-align:center;color:${riskColor(run.feedbackRisk)}">${run.feedbackRisk}</td>
+          <td style="text-align:center;color:${run.missingCount === 0 ? 'var(--uncommon)' : 'var(--red)'}">${run.missingCount}</td>
+          ${metricsDelta}
+          <td style="font-size:0.65rem;color:var(--text-dim);max-width:160px;word-break:break-word">${run.notes}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderSparklines(runs) {
+      const metrics = [
+        { key: 'loopClosure',       label: 'Loop Closure',        containerId: 'spark-loop' },
+        { key: 'traceFidelity',     label: 'Trace Fidelity',      containerId: 'spark-trace' },
+        { key: 'memoryPersistence', label: 'Memory Persistence',  containerId: 'spark-memory' },
+        { key: 'contextFidelity',   label: 'Context Fidelity',    containerId: 'spark-context' }
+      ];
+
+      metrics.forEach(m => {
+        const container = document.getElementById(m.containerId);
+        if (!container) return;
+
+        const W = 200, H = 80;
+        const values = runs.map(r => r[m.key]);
+        const minVal = Math.max(0,  Math.min(...values) - 5);
+        const maxVal = Math.min(100, Math.max(...values) + 5);
+        const range  = maxVal - minVal || 1;
+
+        function toX(i) { return runs.length === 1 ? W / 2 : (i / (runs.length - 1)) * (W - 20) + 10; }
+        function toY(v) { return H - 12 - ((v - minVal) / range) * (H - 24); }
+
+        // Target line Y at 95%
+        const targetY = toY(Math.min(95, maxVal));
+
+        let pathD = values.map((v, i) => `${i === 0 ? 'M' : 'L'} ${toX(i)} ${toY(v)}`).join(' ');
+        let dots   = values.map((v, i) => `<circle cx="${toX(i)}" cy="${toY(v)}" r="4" fill="${v >= 95 ? '#1eff00' : v >= 80 ? '#c8a84b' : '#ff2020'}" stroke="var(--bg)" stroke-width="2"/>`).join('');
+
+        let labels = runs.map((r, i) => `<text x="${toX(i)}" y="${H - 1}" text-anchor="middle" fill="rgba(200,168,75,0.4)" font-size="8">${r.version.split('-')[0]}</text>`).join('');
+
+        container.innerHTML = `
+          <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:${H}px;overflow:visible">
+            <!-- Grid lines -->
+            <line x1="0" y1="${toY(80)}" x2="${W}" y2="${toY(80)}" stroke="rgba(200,168,75,0.08)" stroke-width="1"/>
+            <line x1="0" y1="${toY(90)}" x2="${W}" y2="${toY(90)}" stroke="rgba(200,168,75,0.08)" stroke-width="1"/>
+            <!-- Target line at 95% -->
+            <line x1="0" y1="${targetY}" x2="${W}" y2="${targetY}" stroke="var(--gold)" stroke-width="1" stroke-dasharray="4 4" opacity="0.6"/>
+            <text x="${W - 2}" y="${targetY - 3}" text-anchor="end" fill="var(--gold)" font-size="7" opacity="0.7">95% target</text>
+            <!-- Sparkline -->
+            ${values.length > 1 ? `<path d="${pathD}" fill="none" stroke="rgba(200,168,75,0.5)" stroke-width="1.5" stroke-linejoin="round"/>` : ''}
+            <!-- Dots -->
+            ${dots}
+            <!-- X labels -->
+            ${labels}
+          </svg>
+        `;
+      });
+    }
+
+    function updateSummaryBox(runs) {
+      const box = document.getElementById('test-summary-box');
+      if (!box) return;
+      const latestRun = runs[runs.length - 1];
+      const trend = runs.length > 1 ? 'improving' : 'establishing baseline';
+      box.innerHTML = `
+        <div class="test-summary-row"><span class="test-sum-label">Total test runs:</span><span class="test-sum-val" style="color:var(--gold)">${runs.length}</span></div>
+        <div class="test-summary-row"><span class="test-sum-label">Latest version:</span><span class="test-sum-val" style="color:var(--gold)">${latestRun.version}</span></div>
+        <div class="test-summary-row"><span class="test-sum-label">Latest Loop Closure:</span><span class="test-sum-val" style="color:${latestRun.loopClosure >= 95 ? 'var(--uncommon)' : 'var(--gold)'}">${latestRun.loopClosure}%</span></div>
+        <div class="test-summary-row"><span class="test-sum-label">Trend direction:</span><span class="test-sum-val" style="color:var(--text-dim)">${trend}</span></div>
+        <div class="test-summary-row"><span class="test-sum-label">Next recommended test:</span><span class="test-sum-val" style="color:var(--text-dim)">After building Harness Proposer (HANDS slot)</span></div>
+        <div class="test-sum-note">Test data is stored in localStorage. Export using the button above.</div>
+      `;
+    }
+
+    function initTests() {
+      const form    = document.getElementById('test-log-form');
+      const allRuns = getTestRuns();
+
+      // Initial render
+      renderTestTable(allRuns);
+      renderSparklines(allRuns);
+      updateSummaryBox(allRuns);
+
+      if (!form) return;
+
+      // Pre-fill date with today
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const dateInput = document.getElementById('test-date');
+      if (dateInput) dateInput.value = todayStr;
+
+      // Slider live value display
+      ['slider-loop','slider-trace','slider-memory','slider-context'].forEach(id => {
+        const slider = document.getElementById(id);
+        const display = document.getElementById(id + '-val');
+        if (slider && display) {
+          display.textContent = slider.value + '%';
+          slider.addEventListener('input', () => { display.textContent = slider.value + '%'; });
+        }
+      });
+
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const runs = getTestRuns();
+        const newRun = {
+          id: 'run-' + Date.now(),
+          date:               document.getElementById('test-date').value || new Date().toISOString().slice(0, 10),
+          version:            document.getElementById('test-version').value || 'v?',
+          loopClosure:        parseInt(document.getElementById('slider-loop').value),
+          traceFidelity:      parseInt(document.getElementById('slider-trace').value),
+          memoryPersistence:  parseInt(document.getElementById('slider-memory').value),
+          contextFidelity:    parseInt(document.getElementById('slider-context').value),
+          feedbackRisk:       document.getElementById('test-risk').value,
+          missingCount:       parseInt(document.getElementById('test-missing').value) || 0,
+          notes:              document.getElementById('test-notes').value
+        };
+        runs.push(newRun);
+        saveTestRuns(runs);
+        renderTestTable(runs);
+        renderSparklines(runs);
+        updateSummaryBox(runs);
+
+        // Gold flash confirmation
+        const confirmEl = document.getElementById('test-confirm');
+        if (confirmEl) {
+          confirmEl.style.display = 'block';
+          confirmEl.style.opacity = '1';
+          setTimeout(() => {
+            confirmEl.style.opacity = '0';
+            setTimeout(() => { confirmEl.style.display = 'none'; }, 400);
+          }, 2000);
+        }
+
+        form.reset();
+        // Re-set default date to today
+        const dateInput = document.getElementById('test-date');
+        if (dateInput) dateInput.value = new Date().toISOString().slice(0, 10);
+        // Reset slider displays
+        ['slider-loop','slider-trace','slider-memory','slider-context'].forEach(id => {
+          const slider = document.getElementById(id);
+          const display = document.getElementById(id + '-val');
+          if (slider && display) { slider.value = 80; display.textContent = '80%'; }
+        });
+      });
+
+      // Export JSON button
+      const exportBtn = document.getElementById('test-export-btn');
+      if (exportBtn) {
+        exportBtn.addEventListener('click', () => {
+          const runs = getTestRuns();
+          const blob = new Blob([JSON.stringify(runs, null, 2)], {type: 'application/json'});
+          const url  = URL.createObjectURL(blob);
+          const a    = document.createElement('a');
+          a.href     = url;
+          a.download = 'harness-test-runs.json';
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      }
+    }
+
+  </script>
+
+  <!-- ============================================================
+       PART 2 CSS (appended to head — works via style tag in body)
+  ============================================================ -->
+  <style>
+
+    /* ============================================================
+       TAB 4 — SET BONUSES
+    ============================================================ */
+    #set-bonuses-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sb-card {
+      border: 1px solid rgba(200,168,75,0.35);
+      border-radius: 5px;
+      padding: 20px 24px;
+      position: relative;
+      transition: box-shadow 0.25s;
+    }
+
+    .sb-card:hover {
+      box-shadow: 0 6px 28px rgba(0,0,0,0.5);
+    }
+
+    .sb-card-legendary {
+      animation: legendaryShimmer 4s ease-in-out infinite;
+    }
+
+    @keyframes legendaryShimmer {
+      0%, 100% { box-shadow: 0 0 12px rgba(200,168,75,0.08); }
+      50%       { box-shadow: 0 0 28px rgba(200,168,75,0.2);  }
+    }
+
+    .sb-card-header {
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(200,168,75,0.15);
+    }
+
+    .sb-card-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .sb-card-name {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .sb-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sb-piece-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 2px;
+      font-size: 0.62rem;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(200,168,75,0.08);
+      color: var(--text-dim);
+      border: 1px solid rgba(200,168,75,0.2);
+    }
+
+    .sb-card-body {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .sb-card-body { grid-template-columns: 1fr; }
+    }
+
+    .sb-section-label {
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    /* Slots list */
+    .sb-slots-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sb-slot-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 8px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 3px;
+      border: 1px solid rgba(200,168,75,0.08);
+    }
+
+    .sb-slot-icon { font-size: 1rem; flex-shrink: 0; }
+
+    .sb-slot-label-sm {
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      width: 68px;
+      flex-shrink: 0;
+    }
+
+    .sb-slot-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      color: var(--text);
+    }
+
+    /* Bonus section */
+    .sb-bonus-section {}
+
+    .sb-bonus-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .sb-stat-bar-wrap {
+      margin-bottom: 10px;
+    }
+
+    .sb-stat-bar-track {
+      height: 5px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .sb-stat-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.6s ease;
+    }
+
+    .sb-bonus-desc {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+
+    .sb-boosts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 20px;
+      margin-bottom: 10px;
+    }
+
+    .sb-boost-item {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 0.75rem;
+    }
+
+    .sb-boost-label { color: var(--text-dim); }
+
+    .sb-boost-val {
+      font-weight: bold;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    /* Locked 5th piece */
+    .sb-locked-bonus {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(80,80,80,0.4);
+      border-radius: 3px;
+      padding: 10px 14px;
+      margin-top: 8px;
+      opacity: 0.7;
+    }
+
+    .sb-locked-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .sb-lock-icon { font-size: 0.9rem; }
+
+    .sb-locked-title {
+      font-size: 0.65rem;
+      color: var(--grey-light);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .sb-locked-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.78rem;
+      color: var(--grey-light);
+      margin-bottom: 2px;
+    }
+
+    .sb-locked-req {
+      font-size: 0.65rem;
+      color: var(--grey);
+      margin-bottom: 4px;
+    }
+
+    .sb-locked-stat {
+      font-size: 0.72rem;
+      color: var(--grey);
+      font-style: italic;
+    }
+
+    /* Partial warning */
+    .sb-partial-warning {
+      background: rgba(255,128,0,0.08);
+      border: 1px solid rgba(255,128,0,0.3);
+      border-radius: 3px;
+      padding: 6px 10px;
+      font-size: 0.7rem;
+      color: var(--epic);
+      margin-top: 8px;
+    }
+
+    /* ============================================================
+       TAB 5 — GAPS
+    ============================================================ */
+    .gaps-section {
+      margin-bottom: 32px;
+    }
+
+    .gaps-section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(200,168,75,0.12);
+    }
+
+    .gaps-section-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .gaps-count-badge {
+      padding: 2px 10px;
+      border-radius: 2px;
+      font-size: 0.65rem;
+      font-weight: bold;
+      letter-spacing: 0.06em;
+    }
+
+    .badge-critical  { background: rgba(255,32,32,0.15);  color: var(--red);      border: 1px solid rgba(255,32,32,0.35); }
+    .badge-partial   { background: rgba(255,128,0,0.12);  color: var(--epic);     border: 1px solid rgba(255,128,0,0.3); }
+    .badge-structural{ background: rgba(0,112,221,0.1);   color: var(--rare);     border: 1px solid rgba(0,112,221,0.25); }
+
+    .gap-item {
+      background: var(--panel-inner);
+      border-radius: 4px;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+      border-left: 3px solid transparent;
+    }
+
+    .gap-critical   { border-left-color: var(--red);  animation: gapCritPulse 2.6s ease-in-out infinite; }
+    .gap-partial    { border-left-color: var(--epic);  border: 1px solid rgba(255,128,0,0.2); border-left: 3px solid var(--epic); }
+    .gap-structural { border-left-color: var(--rare);  border: 1px solid rgba(0,112,221,0.15); border-left: 3px solid var(--rare); }
+
+    @keyframes gapCritPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(255,32,32,0); border-color: rgba(255,32,32,0.5); }
+      50%      { box-shadow: 0 0 12px 0 rgba(255,32,32,0.15); border-left-color: var(--red); }
+    }
+
+    .gap-header { margin-bottom: 10px; }
+
+    .gap-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+
+    .gap-num {
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .gap-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .gap-tag {
+      font-size: 0.58rem;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      padding: 1px 7px;
+      border-radius: 2px;
+    }
+
+    .gap-tag-missing { background: rgba(255,32,32,0.15); color: var(--red);  border: 1px solid rgba(255,32,32,0.35); }
+    .gap-tag-partial { background: rgba(255,128,0,0.12); color: var(--epic); border: 1px solid rgba(255,128,0,0.3); }
+
+    .gap-severity {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+
+    .gap-field {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 7px;
+      font-size: 0.73rem;
+      line-height: 1.55;
+    }
+
+    .gap-field-label {
+      color: var(--text-dim);
+      flex-shrink: 0;
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding-top: 1px;
+      min-width: 80px;
+    }
+
+    .gap-field-val { color: var(--text); }
+
+    .gap-action {
+      margin-top: 8px;
+      padding: 6px 10px;
+      background: rgba(200,168,75,0.06);
+      border-radius: 3px;
+      font-size: 0.7rem;
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .gap-action-label {
+      font-weight: bold;
+      color: var(--gold);
+      margin-right: 4px;
+    }
+
+    /* ============================================================
+       TAB 6 — TESTS
+    ============================================================ */
+    .test-form-panel {
+      background: var(--panel-inner);
+      border: 1px solid rgba(200,168,75,0.2);
+      border-radius: 4px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+
+    .test-form-panel h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .test-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 24px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 680px) { .test-form-grid { grid-template-columns: 1fr; } }
+
+    .test-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .test-field label {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .test-input {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(200,168,75,0.2);
+      border-radius: 3px;
+      padding: 7px 10px;
+      color: var(--text);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .test-input:focus { border-color: var(--gold); }
+
+    .test-input option { background: #0f0f1a; }
+
+    .test-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .test-slider-row input[type=range] {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 4px;
+      background: rgba(200,168,75,0.2);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    .test-slider-row input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px; height: 14px;
+      background: var(--gold);
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 6px rgba(200,168,75,0.5);
+    }
+
+    .slider-val {
+      font-family: 'Cinzel', serif;
+      font-size: 0.78rem;
+      color: var(--gold-bright);
+      width: 36px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .test-sliders-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 24px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 680px) { .test-sliders-grid { grid-template-columns: 1fr; } }
+
+    .test-slider-field { display: flex; flex-direction: column; gap: 5px; }
+    .test-slider-field label { font-size: 0.65rem; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .test-submit-btn {
+      background: linear-gradient(135deg, #1a1208 0%, #2a1e08 100%);
+      border: 1px solid var(--gold-dim);
+      border-radius: 3px;
+      padding: 10px 24px;
+      color: var(--gold-bright);
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .test-submit-btn:hover {
+      border-color: var(--gold);
+      box-shadow: 0 0 12px rgba(200,168,75,0.25);
+    }
+
+    .test-confirm {
+      display: none;
+      margin-left: 16px;
+      padding: 8px 16px;
+      background: rgba(200,168,75,0.2);
+      border: 1px solid rgba(200,168,75,0.5);
+      border-radius: 3px;
+      font-size: 0.75rem;
+      color: var(--gold-bright);
+      transition: opacity 0.4s;
+    }
+
+    /* Test results table */
+    .test-table-wrap {
+      background: var(--panel-inner);
+      border: 1px solid rgba(200,168,75,0.2);
+      border-radius: 4px;
+      overflow-x: auto;
+      margin-bottom: 24px;
+    }
+
+    .test-table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(200,168,75,0.15);
+      background: rgba(200,168,75,0.04);
+    }
+
+    .test-table-header h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .test-export-btn {
+      background: rgba(0,112,221,0.1);
+      border: 1px solid rgba(0,112,221,0.3);
+      border-radius: 3px;
+      padding: 5px 12px;
+      color: var(--rare);
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .test-export-btn:hover { background: rgba(0,112,221,0.18); }
+
+    .test-runs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.7rem;
+      min-width: 900px;
+    }
+
+    .test-runs-table thead th {
+      padding: 8px 10px;
+      text-align: left;
+      color: var(--text-dim);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(200,168,75,0.12);
+      background: rgba(0,0,0,0.2);
+      white-space: nowrap;
+    }
+
+    .test-runs-table tbody tr {
+      border-bottom: 1px solid rgba(200,168,75,0.06);
+      transition: background 0.15s;
+    }
+
+    .test-runs-table tbody tr:hover { background: rgba(200,168,75,0.04); }
+
+    .test-runs-table td { padding: 7px 10px; vertical-align: middle; }
+
+    /* Sparklines section */
+    .sparklines-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 900px) { .sparklines-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .sparklines-grid { grid-template-columns: 1fr; } }
+
+    .sparkline-card {
+      background: var(--panel-inner);
+      border: 1px solid rgba(200,168,75,0.15);
+      border-radius: 4px;
+      padding: 12px 14px;
+    }
+
+    .sparkline-card h4 {
+      font-family: 'Cinzel', serif;
+      font-size: 0.68rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    /* Summary box */
+    .test-summary-panel {
+      background: var(--panel-inner);
+      border: 1px solid rgba(200,168,75,0.15);
+      border-radius: 4px;
+      padding: 16px 20px;
+    }
+
+    .test-summary-panel h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .test-summary-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 6px;
+      font-size: 0.75rem;
+    }
+
+    .test-sum-label { color: var(--text-dim); min-width: 180px; flex-shrink: 0; }
+    .test-sum-val   { color: var(--text); }
+
+    .test-sum-note {
+      margin-top: 10px;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+
+  </style>
+
+  <!-- ============================================================
+       TAB 4 — SET BONUSES (HTML panel)
+  ============================================================ -->
+  <div class="tab-panel" id="tab-setbonuses">
+
+    <h2 class="tab-section-title">Set Bonuses</h2>
+    <p class="tab-section-sub">Emergent Power from Tier Combinations — activate multiple components to unlock system-level effects</p>
+
+    <div id="set-bonuses-container">
+      <!-- Built by JS: renderSetBonuses() -->
+    </div>
+
+  </div><!-- /tab-setbonuses -->
+
+  <!-- ============================================================
+       TAB 5 — GAPS (HTML panel)
+  ============================================================ -->
+  <div class="tab-panel" id="tab-gaps">
+
+    <h2 class="tab-section-title">Gap Analysis</h2>
+    <p class="tab-section-sub">What's Missing, What's Partial, What's at Risk</p>
+
+    <!-- Section 1: Critical -->
+    <div class="gaps-section">
+      <div class="gaps-section-header">
+        <span class="gaps-section-title" style="color:var(--red)">Critical Gaps</span>
+        <span class="gaps-count-badge badge-critical">0 Critical</span>
+      </div>
+      <div id="gaps-critical-list">
+        <!-- Built by JS: renderGaps() -->
+      </div>
+    </div>
+
+    <!-- Section 2: Partial / At Risk -->
+    <div class="gaps-section">
+      <div class="gaps-section-header">
+        <span class="gaps-section-title" style="color:var(--epic)">Partial / At Risk</span>
+        <span class="gaps-count-badge badge-partial">4 Partial</span>
+      </div>
+      <div id="gaps-partial-list">
+        <!-- Built by JS: renderGaps() -->
+      </div>
+    </div>
+
+    <!-- Section 3: Structural Risks -->
+    <div class="gaps-section">
+      <div class="gaps-section-header">
+        <span class="gaps-section-title" style="color:var(--rare)">Structural Risks</span>
+        <span class="gaps-count-badge badge-structural">4 Risks</span>
+      </div>
+      <div id="gaps-structural-list">
+        <!-- Built by JS: renderGaps() -->
+      </div>
+    </div>
+
+  </div><!-- /tab-gaps -->
+
+  <!-- ============================================================
+       TAB 6 — TESTS (HTML panel)
+  ============================================================ -->
+  <div class="tab-panel" id="tab-tests">
+
+    <h2 class="tab-section-title">Test Runs</h2>
+    <p class="tab-section-sub">Empirical Harness Performance Verification — the loop is not closed until the numbers say so.</p>
+
+    <!-- Log a Test Run form -->
+    <div class="test-form-panel">
+      <h3>Log a Test Run</h3>
+      <form id="test-log-form" autocomplete="off">
+
+        <div class="test-form-grid">
+          <div class="test-field">
+            <label for="test-date">Date</label>
+            <input class="test-input" type="text" id="test-date" placeholder="YYYY-MM-DD">
+          </div>
+          <div class="test-field">
+            <label for="test-version">Version Tag</label>
+            <input class="test-input" type="text" id="test-version" placeholder="e.g. v1.1-proposer-added">
+          </div>
+          <div class="test-field">
+            <label for="test-risk">Feedback Compression Risk</label>
+            <select class="test-input" id="test-risk">
+              <option value="LOW">LOW</option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="HIGH">HIGH</option>
+            </select>
+          </div>
+          <div class="test-field">
+            <label for="test-missing">Missing Components Count</label>
+            <input class="test-input" type="number" id="test-missing" min="0" max="17" value="1">
+          </div>
+          <div class="test-field" style="grid-column: 1 / -1">
+            <label for="test-notes">Notes</label>
+            <textarea class="test-input" id="test-notes" rows="2" placeholder="What changed? What was tested?" style="resize:vertical"></textarea>
+          </div>
+        </div>
+
+        <!-- Metric sliders -->
+        <div class="test-sliders-grid">
+          <div class="test-slider-field">
+            <label>Loop Closure %</label>
+            <div class="test-slider-row">
+              <input type="range" id="slider-loop" min="0" max="100" value="80">
+              <span class="slider-val" id="slider-loop-val">80%</span>
+            </div>
+          </div>
+          <div class="test-slider-field">
+            <label>Trace Fidelity %</label>
+            <div class="test-slider-row">
+              <input type="range" id="slider-trace" min="0" max="100" value="80">
+              <span class="slider-val" id="slider-trace-val">80%</span>
+            </div>
+          </div>
+          <div class="test-slider-field">
+            <label>Memory Persistence %</label>
+            <div class="test-slider-row">
+              <input type="range" id="slider-memory" min="0" max="100" value="80">
+              <span class="slider-val" id="slider-memory-val">80%</span>
+            </div>
+          </div>
+          <div class="test-slider-field">
+            <label>Context Fidelity %</label>
+            <div class="test-slider-row">
+              <input type="range" id="slider-context" min="0" max="100" value="80">
+              <span class="slider-val" id="slider-context-val">80%</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+          <button type="submit" class="test-submit-btn">Log Test Run →</button>
+          <div class="test-confirm" id="test-confirm">Run logged successfully</div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Results Table -->
+    <div class="test-table-wrap">
+      <div class="test-table-header">
+        <h3>Test Run Results</h3>
+        <button class="test-export-btn" id="test-export-btn">Export JSON</button>
+      </div>
+      <table class="test-runs-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Version</th>
+            <th>Loop Closure</th>
+            <th>Trace Fidelity</th>
+            <th>Mem. Persist.</th>
+            <th>Ctx. Fidelity</th>
+            <th>FB Risk</th>
+            <th>Missing</th>
+            <th>Loop Δ</th>
+            <th>Trace Δ</th>
+            <th>Mem Δ</th>
+            <th>Ctx Δ</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="test-runs-tbody">
+          <!-- Built by JS: initTests() -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Trend Sparklines -->
+    <div class="sparklines-grid">
+      <div class="sparkline-card">
+        <h4>Loop Closure</h4>
+        <div id="spark-loop"></div>
+      </div>
+      <div class="sparkline-card">
+        <h4>Trace Fidelity</h4>
+        <div id="spark-trace"></div>
+      </div>
+      <div class="sparkline-card">
+        <h4>Memory Persistence</h4>
+        <div id="spark-memory"></div>
+      </div>
+      <div class="sparkline-card">
+        <h4>Context Fidelity</h4>
+        <div id="spark-context"></div>
+      </div>
+    </div>
+
+    <!-- Summary box -->
+    <div class="test-summary-panel">
+      <h3>Summary</h3>
+      <div id="test-summary-box">
+        <!-- Built by JS: updateSummaryBox() -->
+      </div>
+    </div>
+
+  </div><!-- /tab-tests -->
+
+  <!-- ============================================================
+       INIT PART 2 TABS
+  ============================================================ -->
+  <script>
+    renderSetBonuses();
+    renderGaps();
+    initTests();
+  </script>
+
+</body>
+</html>
