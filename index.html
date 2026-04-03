@@ -2138,48 +2138,48 @@
       partial: [
         {
           title: 'Bridges / MCP Servers (TRINKET 2)',
-          tag: 'PARTIAL',
-          issue: 'Gmail and Google Calendar MCP bridges are unstable. Authentication drops silently.',
-          risk: 'If bridges fail mid-session, the harness fragments — memory and external signals stop talking to each other.',
-          fix: '✓ mcp-health-check.sh built and wired as SessionStart hook. Checks all MCP server binaries on every session open and logs degraded bridges. Reconnect logic still manual.'
+          tag: 'RESOLVED',
+          issue: 'Gmail and Google Calendar MCP bridges were invisible to the health check — mcp-health-check.sh only checked user-configured servers (settings.json had none), so it was a complete no-op.',
+          risk: 'Auth token expiry for Gmail/GCal would go undetected; health check logged nothing.',
+          fix: '✅ RESOLVED 2026-04-03: Added system bridge auth-age check via ~/.claude/mcp-needs-auth-cache.json. Thresholds: >720h=CRITICAL, >168h=DEGRADED. Added explicit PATH for non-interactive shells. Removed early exit when no user-configured servers. Gmail: OK (3.6h), GCal: OK (3.6h).'
         },
         {
           title: 'Version Snapshots → Performance Linkage (RING 2)',
           tag: 'PARTIAL',
           issue: 'Versions are snapshotted but not tagged with performance outcomes. Can\'t answer "which harness version performed best?"',
-          risk: 'The Pareto frontier data exists but can\'t be matched to specific harness versions.',
-          fix: '✓ version-outcome-query.py built: --list (table with scores), --best (top frontier candidate + matching version), --diff V1 V2, --tag VID score. Linkage works via CLAUDE.md content similarity matching.'
+          risk: 'The Pareto frontier data exists but similarity matching (>0.85 ratio) isn\'t matching the minimal global CLAUDE.md (4 lines) to candidates. Version linkage shows "unmatched" for all versions.',
+          fix: '✓ version-outcome-query.py built and pareto-frontier.json is now live (frontier_size=1, best quality=0.7442). Version linkage works when CLAUDE.md is substantive; current global CLAUDE.md is intentionally minimal. Linkage will populate naturally as the harness evolves.'
         },
         {
-          title: 'Tests Tab — Baseline Run Recorded (2026-04-03)',
-          tag: 'PARTIAL',
-          issue: 'First empirical test run logged (v1.1-gap-fixes-audit). Baseline candidate 20260401_122216_000 scored with 70 attached sessions. Proposer iteration 1 complete, candidate 20260403_103836_000 serialized.',
-          risk: 'Need 3 scored candidates for baseline median before composite_quality scores unlock. Currently at 1/3.',
-          fix: '✓ Test run logged 2026-04-03: Loop Closure 88%, Trace Fidelity 96%, Memory Persistence 95%, Context Fidelity 96%, Missing 0. Run 2 more proposer iterations to establish scoring baseline.'
+          title: 'Tests Tab — Scoring Pipeline Live (2026-04-03)',
+          tag: 'RESOLVED',
+          issue: 'score-candidate.py had a schema mismatch: trace-writer.py writes nested implicit.* fields, but the scorer expected flat top-level keys. avg_tokens_per_task was never written anywhere. Scoring had never worked.',
+          risk: 'Pareto frontier was permanently empty. All scoring was silently failing.',
+          fix: '✅ RESOLVED 2026-04-03: normalize_pareto_record() deployed. Fixed token field names (tokens_used.input not input_tokens). Bootstrapped baseline. First real score: composite_quality=0.7442, clean_rate=51.4%, tool_error_rate=4.2%, correction_rate=20.4%, n_sessions=70. Pareto frontier live with 1 candidate.'
         },
         {
-          title: 'Feedback Loop Closure — Unverified Closure Rate',
-          tag: 'PARTIAL',
-          issue: 'Feedback memories are written but not automatically checked for regression. A pattern could re-occur and go unnoticed.',
-          risk: '30% of feedback memories may have already recurred without detection.',
-          fix: '✓ feedback-regression-detector.py built: scans last N days of session logs for keyword patterns matching feedback_*.md rules, outputs closure_rate_estimate. Run: python3 ~/.claude/meta-harness/scripts/feedback-regression-detector.py --days 30'
+          title: 'Feedback Loop Closure — Data Source Fixed',
+          tag: 'RESOLVED',
+          issue: 'feedback-regression-detector.py scanned session-logs/ which contains structured activity lines (timestamp|session=ID|cwd=PATH), not free-form text. Keyword matching produced 0 sessions scanned and artificially 100% closure rate.',
+          risk: 'The closure rate metric was meaningless — no real regression detection was happening.',
+          fix: '✅ RESOLVED 2026-04-03: Added ~/.claude/pareto/ as third data source. Only includes records with correction_signals>0 or outcome==degraded. Result: 0 sessions → 35 sessions scanned. Detector now runs against real regression signal data.'
         }
       ],
       structural: [
         {
           title: 'Context Scale vs. Cost',
-          issue: 'Meta-Harness uses 10 MTok per iteration. At current Claude API pricing, this is ~$15-30 per optimization iteration. Without careful batching, the outer loop could be expensive.',
-          mitigation: 'Start with 5-iteration budget per run, focus on highest-value harness components first.'
+          issue: 'Meta-Harness uses 10 MTok per iteration. At current Claude API pricing, this is ~$15-30 per optimization iteration. No budget cap enforced. Real cost data is in ~/.claude/cost-alerts.log (neither planning model found this).',
+          mitigation: '🔵 DEFERRED to Next Sprint: --max-cost flag for run-loop.py, estimate_session_cost() from cost-alerts.log, cumulative tracking in loop-runs.jsonl, hard cap at 50% of budget per iteration.'
         },
         {
           title: 'Trace Store Unbounded Growth',
-          issue: '~/.claude/traces/ grows indefinitely. No pruning or archival strategy defined.',
-          mitigation: '✓ archive-traces.sh built: keeps last 90 days hot, moves older sessions to traces/archive/. Supports --dry-run. Run manually or add to cron.'
+          issue: '~/.claude/traces/ grows indefinitely. archive-traces.sh had a double-count bug (ARCHIVED incremented both inside mv-success branch AND unconditionally on line 70).',
+          mitigation: '✅ RESOLVED 2026-04-03: Double-count bug fixed. Added DRY_ARCHIVED counter for dry-run mode. Created com.nick.archive-traces LaunchAgent (Sunday 2am, ~/Library/LaunchAgents/). Loaded and verified. 77 sessions hot, 0 to archive (all recent).'
         },
         {
           title: 'Single Point of Failure — CLAUDE.md',
-          issue: 'All harness behavior flows from one file. If CLAUDE.md becomes corrupted or loses entries, harness behavior degrades silently.',
-          mitigation: '✓ claude-md-validator.sh built and wired as SessionStart hook. Checks: exists → >500 bytes → key sections present (Global Instructions, Context7, Auto-Activation) → valid UTF-8. Auto-recovers from harness-versions/ backup if file is missing.'
+          issue: 'All harness behavior flows from one file. Validator had wrong thresholds (500 bytes, 10 lines) for the intentionally minimal global CLAUDE.md (313 bytes, 4 lines). No emergency backup separate from proposer loop.',
+          mitigation: '✅ RESOLVED 2026-04-03: 4-layer recovery now active: (1) emergency backup ~/.claude/meta-harness/.claude-md-emergency-backup, (2) harness-versions/, (3) candidate snapshots, (4) git. Hash sentinel (SHA-256) detects silent changes. Truncation guard (≤2 lines = CRITICAL). Thresholds corrected to 100 bytes / 2 lines.'
         },
       ]
     };
