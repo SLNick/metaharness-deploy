@@ -1156,7 +1156,7 @@
       { col:'right', label:'LEGS', icon:'🧭', name:'SecondBrain Vault', ilvl:764, quality:'legendary', status:'active', path:'~/Downloads/Claude Memory SecondBrain/', desc:'Obsidian visual knowledge graph. Symlinks to all project repos. 659-line master lesson file.', stats:[{label:'Knowledge Density',val:'+88'},{label:'Cross-Project Linkage',val:'+76'},{label:'Pattern Emergence',val:'+69'}], scoreBreakdown:{maturity:90,coverage:84,integration:87}, enchants:['02-projects/ symlinks','cross-project-lessons.md compilation'] },
       { col:'right', label:'FEET', icon:'⚡', name:'FastAPI / Frontend Patterns', ilvl:743, quality:'rare', status:'active', path:'memory: feedback_fastapi_patterns.md + feedback_frontend_patterns.md', desc:'Encoded patterns: FastAPI routing/ORM/state machines, React Query/AI SDK v5/dnd-kit.', stats:[{label:'Implementation Speed',val:'+71'},{label:'Pattern Consistency',val:'+66'},{label:'Stack Coverage',val:'+58'}], scoreBreakdown:{maturity:80,coverage:76,integration:72}, enchants:['auto-loaded from memory','prevents stack rediscovery'] },
       { col:'right', label:'TRINKET 1', icon:'🌐', name:'Tavily MCP', ilvl:748, quality:'epic', status:'active', path:'MCP server: tavily', desc:'Real-time external signal capture: search, extract, crawl, map.', stats:[{label:'Signal Recency',val:'+94'},{label:'Source Coverage',val:'+73'},{label:'Extraction Fidelity',val:'+67'}], scoreBreakdown:{maturity:82,coverage:85,integration:75}, enchants:['4 tools: search/extract/crawl/map','tavily_skill for orchestrated research'] },
-      { col:'right', label:'TRINKET 2', icon:'🌉', name:'Bridges / MCP Servers', ilvl:736, quality:'rare', status:'partial', path:'MCP: context7, tavily, Gmail, Google Calendar', desc:'Connective tissue. Ensures all layers see and speak to each other. No fragmentation.', stats:[{label:'System Coherence',val:'+72'},{label:'Fragmentation Prevention',val:'+65'},{label:'Loop Closure',val:'+58'}], scoreBreakdown:{maturity:74,coverage:68,integration:62}, enchants:['partial: Gmail/Calendar bridges unstable'] },
+      { col:'right', label:'TRINKET 2', icon:'🌉', name:'Bridges / MCP Servers', ilvl:736, quality:'rare', status:'active', path:'MCP: context7, tavily, Gmail, Google Calendar', desc:'Connective tissue. Ensures all layers see and speak to each other. No fragmentation. MCP health check active — auth-age monitoring via mcp-needs-auth-cache.json.', stats:[{label:'System Coherence',val:'+72'},{label:'Fragmentation Prevention',val:'+65'},{label:'Loop Closure',val:'+58'}], scoreBreakdown:{maturity:74,coverage:68,integration:62}, enchants:['auth-age check: >720h=CRITICAL, >168h=DEGRADED','Gmail/Calendar health monitoring active'] },
       { col:'right', label:'OFF-HAND', icon:'🔬', name:'Deep Research Skill', ilvl:753, quality:'epic', status:'active', path:'~/.claude/skills/deep-research/', desc:'Multi-source research with citation tracking and source credibility scoring.', stats:[{label:'Source Synthesis',val:'+81'},{label:'Citation Accuracy',val:'+76'},{label:'Credibility Scoring',val:'+68'}], scoreBreakdown:{maturity:84,coverage:80,integration:78}, enchants:['citation-backed reports','source credibility scoring'] },
       // BOTTOM ROW
       { col:'bottom', label:'MAIN-HAND', icon:'🗡️', name:'Implementation Planner', ilvl:771, quality:'legendary', status:'active', path:'~/.claude/skills/implementation/', desc:'Opus 4.6 + Codex in parallel on engineering gaps. Banks lessons to SecondBrain after every run.', stats:[{label:'Plan Accuracy',val:'+86'},{label:'Gap Detection',val:'+79'},{label:'Multi-Model Synthesis',val:'+91'}], scoreBreakdown:{maturity:92,coverage:88,integration:90}, enchants:['Opus 4.6 + Codex parallel','lessons banked to SecondBrain after each run'] },
@@ -2137,32 +2137,11 @@
       critical: [],
       partial: [
         {
-          title: 'Bridges / MCP Servers (TRINKET 2)',
-          tag: 'RESOLVED',
-          issue: 'Gmail and Google Calendar MCP bridges were invisible to the health check — mcp-health-check.sh only checked user-configured servers (settings.json had none), so it was a complete no-op.',
-          risk: 'Auth token expiry for Gmail/GCal would go undetected; health check logged nothing.',
-          fix: '✅ RESOLVED 2026-04-03: Added system bridge auth-age check via ~/.claude/mcp-needs-auth-cache.json. Thresholds: >720h=CRITICAL, >168h=DEGRADED. Added explicit PATH for non-interactive shells. Removed early exit when no user-configured servers. Gmail: OK (3.6h), GCal: OK (3.6h).'
-        },
-        {
           title: 'Version Snapshots → Performance Linkage (RING 2)',
           tag: 'PARTIAL',
           issue: 'Versions are snapshotted but not tagged with performance outcomes. Can\'t answer "which harness version performed best?"',
           risk: 'The Pareto frontier data exists but similarity matching (>0.85 ratio) isn\'t matching the minimal global CLAUDE.md (4 lines) to candidates. Version linkage shows "unmatched" for all versions.',
           fix: '✓ version-outcome-query.py built and pareto-frontier.json is now live (frontier_size=1, best quality=0.7442). Version linkage works when CLAUDE.md is substantive; current global CLAUDE.md is intentionally minimal. Linkage will populate naturally as the harness evolves.'
-        },
-        {
-          title: 'Tests Tab — Scoring Pipeline Live (2026-04-03)',
-          tag: 'RESOLVED',
-          issue: 'score-candidate.py had a schema mismatch: trace-writer.py writes nested implicit.* fields, but the scorer expected flat top-level keys. avg_tokens_per_task was never written anywhere. Scoring had never worked.',
-          risk: 'Pareto frontier was permanently empty. All scoring was silently failing.',
-          fix: '✅ RESOLVED 2026-04-03: normalize_pareto_record() deployed. Fixed token field names (tokens_used.input not input_tokens). Bootstrapped baseline. First real score: composite_quality=0.7442, clean_rate=51.4%, tool_error_rate=4.2%, correction_rate=20.4%, n_sessions=70. Pareto frontier live with 1 candidate.'
-        },
-        {
-          title: 'Feedback Loop Closure — Data Source Fixed',
-          tag: 'RESOLVED',
-          issue: 'feedback-regression-detector.py scanned session-logs/ which contains structured activity lines (timestamp|session=ID|cwd=PATH), not free-form text. Keyword matching produced 0 sessions scanned and artificially 100% closure rate.',
-          risk: 'The closure rate metric was meaningless — no real regression detection was happening.',
-          fix: '✅ RESOLVED 2026-04-03: Added ~/.claude/pareto/ as third data source. Only includes records with correction_signals>0 or outcome==degraded. Result: 0 sessions → 35 sessions scanned. Detector now runs against real regression signal data.'
         }
       ],
       structural: [
@@ -2336,9 +2315,90 @@
           <td style="text-align:center;color:${run.missingCount === 0 ? 'var(--uncommon)' : 'var(--red)'}">${run.missingCount}</td>
           ${metricsDelta}
           <td style="font-size:0.65rem;color:var(--text-dim);max-width:160px;word-break:break-word">${run.notes}</td>
+          <td style="text-align:center;white-space:nowrap">
+            <button class="test-html-report-btn" onclick="generateHtmlReport(${JSON.stringify(run).replace(/"/g,'&quot;')})">HTML Report</button>
+          </td>
         `;
         tbody.appendChild(tr);
       });
+    }
+
+    function generateHtmlReport(run) {
+      const riskColor = run.feedbackRisk === 'LOW' ? '#1eff00' : run.feedbackRisk === 'MEDIUM' ? '#ff8000' : '#ff2020';
+      const metricBar = (label, val) => {
+        const col = val >= 95 ? '#1eff00' : val >= 80 ? '#c8a84b' : '#ff2020';
+        return `<div class="m-row"><span class="m-label">${label}</span><div class="m-bar-wrap"><div class="m-bar" style="width:${val}%;background:${col}"></div></div><span class="m-val" style="color:${col}">${val}%</span></div>`;
+      };
+      const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Harness Test Report — ${run.version}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cinzel+Decorative:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a10;color:#d2c69a;font-family:'Share Tech Mono',monospace;font-size:14px;min-height:100vh;padding:40px 24px}
+.report-wrap{max-width:760px;margin:0 auto}
+.rep-header{text-align:center;padding:32px 0 24px;border-bottom:1px solid #7a6428;margin-bottom:32px}
+.rep-title{font-family:'Cinzel Decorative',serif;font-size:1.8rem;color:#f0cc6a;text-shadow:0 0 24px rgba(200,168,75,0.4);letter-spacing:0.06em;margin-bottom:6px}
+.rep-sub{font-family:'Cinzel',serif;font-size:0.78rem;color:#7a6e58;letter-spacing:0.12em;text-transform:uppercase}
+.rep-version{display:inline-block;margin-top:12px;padding:3px 14px;border:1px solid #7a6428;font-size:0.7rem;color:#c8a84b;letter-spacing:0.1em;font-family:'Cinzel',serif;text-transform:uppercase}
+.section{background:#12121e;border:1px solid #2a2440;padding:20px 24px;margin-bottom:20px}
+.section-title{font-family:'Cinzel',serif;font-size:0.75rem;color:#c8a84b;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid #2a2440}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.meta-item{display:flex;flex-direction:column;gap:3px}
+.meta-label{font-size:0.62rem;color:#7a6e58;letter-spacing:0.1em;text-transform:uppercase}
+.meta-val{font-size:0.85rem;color:#d2c69a}
+.m-row{display:grid;grid-template-columns:140px 1fr 56px;align-items:center;gap:10px;margin-bottom:10px}
+.m-label{font-size:0.68rem;color:#888;text-transform:uppercase;letter-spacing:0.06em}
+.m-bar-wrap{height:8px;background:#1a1a28;border-radius:2px;overflow:hidden}
+.m-bar{height:100%;border-radius:2px;transition:width 0.4s}
+.m-val{font-size:0.75rem;font-weight:700;text-align:right}
+.notes-text{font-size:0.78rem;color:#888;line-height:1.6;white-space:pre-wrap}
+.risk-badge{display:inline-block;padding:3px 12px;font-size:0.7rem;font-family:'Cinzel',serif;letter-spacing:0.08em;border-radius:2px;border:1px solid}
+.rep-footer{text-align:center;padding-top:24px;font-size:0.62rem;color:#555;letter-spacing:0.08em}
+</style>
+</head>
+<body>
+<div class="report-wrap">
+  <div class="rep-header">
+    <div class="rep-title">AI Harness Test Report</div>
+    <div class="rep-sub">Character Equipment Sheet · Eval Results</div>
+    <div class="rep-version">${run.version}</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Run Metadata</div>
+    <div class="meta-grid">
+      <div class="meta-item"><span class="meta-label">Date</span><span class="meta-val">${run.date}</span></div>
+      <div class="meta-item"><span class="meta-label">Version</span><span class="meta-val">${run.version}</span></div>
+      <div class="meta-item"><span class="meta-label">Feedback Risk</span><span class="meta-val"><span class="risk-badge" style="color:${riskColor};border-color:${riskColor}">${run.feedbackRisk}</span></span></div>
+      <div class="meta-item"><span class="meta-label">Missing Slots</span><span class="meta-val" style="color:${run.missingCount===0?'#1eff00':'#ff2020'}">${run.missingCount}</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Core Metrics</div>
+    ${metricBar('Loop Closure', run.loopClosure)}
+    ${metricBar('Trace Fidelity', run.traceFidelity)}
+    ${metricBar('Memory Persistence', run.memoryPersistence)}
+    ${metricBar('Context Fidelity', run.contextFidelity)}
+  </div>
+
+  ${run.notes ? `<div class="section"><div class="section-title">Notes</div><div class="notes-text">${run.notes}</div></div>` : ''}
+
+  <div class="rep-footer">Generated ${new Date().toISOString()} · AI Harness Character Sheet</div>
+</div>
+</body>
+</html>`;
+      const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const blob = new Blob([html], {type: 'text/html'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `harness-test-run-${ts}.html`;
+      a.click();
+      URL.revokeObjectURL(url);
     }
 
     function renderSparklines(runs) {
@@ -3037,6 +3097,21 @@
 
     .test-export-btn:hover { background: rgba(0,112,221,0.18); }
 
+    .test-html-report-btn {
+      background: rgba(200,168,75,0.08);
+      border: 1px solid rgba(200,168,75,0.25);
+      border-radius: 2px;
+      padding: 3px 8px;
+      color: var(--gold);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .test-html-report-btn:hover { background: rgba(200,168,75,0.16); }
+
     .test-runs-table {
       width: 100%;
       border-collapse: collapse;
@@ -3287,6 +3362,7 @@
             <th>Mem Δ</th>
             <th>Ctx Δ</th>
             <th>Notes</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody id="test-runs-tbody">
