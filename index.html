@@ -2462,7 +2462,7 @@ body{background:#0a0a10;color:#d2c69a;font-family:'Share Tech Mono',monospace;fo
               const rate = d.empirical_closure_rate ?? d.closure_rate_estimate;
               if (rate !== undefined) {
                 const col = rate >= 90 ? 'var(--uncommon)' : rate >= 70 ? 'var(--gold)' : 'var(--red)';
-                return \`<div class="test-summary-row"><span class="test-sum-label">Feedback Closure Rate:</span><span class="test-sum-val" style="color:\${col}">\${rate}%</span></div>\`;
+                return `<div class="test-summary-row"><span class="test-sum-label">Feedback Closure Rate:</span><span class="test-sum-val" style="color:${col}">${rate}%</span></div>`;
               }
             }
           } catch(e) {}
