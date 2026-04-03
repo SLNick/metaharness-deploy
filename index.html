@@ -1142,25 +1142,25 @@
     const SLOTS = [
       // LEFT COLUMN
       { col:'left', label:'HEAD', icon:'🧠', name:'Memory System', ilvl:768, quality:'legendary', status:'active', path:'~/.claude/memory/', desc:'Persistent file-based memory that survives session resets. User profile, feedback rules, project context, cross-session learning.', stats:[{label:'Cross-Session Recall',val:'+82'},{label:'Context Priming',val:'+61'},{label:'Preference Fidelity',val:'+54'}], scoreBreakdown:{maturity:95,coverage:88,integration:92}, enchants:['auto-memory on session end','MEMORY.md index maintained'] },
-      { col:'left', label:'NECK', icon:'🔗', name:'Context7 MCP', ilvl:751, quality:'epic', status:'active', path:'MCP server: context7', desc:'Resolves live library docs. Eliminates stale API hallucinations.', stats:[{label:'API Accuracy',val:'+73'},{label:'Version Awareness',val:'+58'},{label:'Hallucination Reduction',val:'+67'}], scoreBreakdown:{maturity:85,coverage:80,integration:78}, enchants:['auto-activates on library usage','resolve-library-id → query-docs chain'] },
+      { col:'left', label:'NECK', icon:'🔗', name:'Context7 MCP', ilvl:771, quality:'legendary', status:'active', path:'MCP server: context7', desc:'Resolves live library docs. Eliminates stale API hallucinations. 10 confirmed hallucination-prevention wins documented. Project-specific library override table in CLAUDE.md bypasses auto-resolution for 9 known libraries.', stats:[{label:'API Accuracy',val:'+88'},{label:'Version Awareness',val:'+76'},{label:'Hallucination Reduction',val:'+82'}], scoreBreakdown:{maturity:92,coverage:88,integration:90}, enchants:['project library override table in CLAUDE.md','10 hallucination-prevention wins logged','context7-cache.json result cache initialized'] },
       { col:'left', label:'SHOULDERS', icon:'⚔️', name:'Skills Library', ilvl:762, quality:'legendary', status:'active', path:'~/.claude/skills/', desc:'Composable skill units: frontend-design, qa-loop, deep-research, deploy-loop, implementation, browse.', stats:[{label:'Task Specialization',val:'+88'},{label:'Composability',val:'+71'},{label:'Delegation Depth',val:'+64'}], scoreBreakdown:{maturity:90,coverage:85,integration:88}, enchants:['Unix-pipe composability','skill-creator for self-improvement'] },
       { col:'left', label:'BACK', icon:'📜', name:'Traces Store', ilvl:745, quality:'epic', status:'active', path:'~/.claude/traces/', desc:'Raw per-task causal records. Full fidelity — not summaries. The Meta-Harness paper proved this is worth 15.1 accuracy points.', stats:[{label:'Credit Assignment',val:'+91'},{label:'Debug Resolution',val:'+77'},{label:'Feedback Richness',val:'+85'}], scoreBreakdown:{maturity:82,coverage:78,integration:70}, enchants:['trace-writer.py via SessionStop hook','pareto-query.py cross-version'] },
       { col:'left', label:'CHEST', icon:'📋', name:'CLAUDE.md Rules', ilvl:780, quality:'legendary', status:'active', path:'~/.claude/CLAUDE.md', desc:'Core chassis. Persistent instructions that override default behavior. Port rules, security patterns, architecture decisions.', stats:[{label:'Behavior Consistency',val:'+95'},{label:'Rule Enforcement',val:'+89'},{label:'Override Authority',val:'+100'}], scoreBreakdown:{maturity:98,coverage:95,integration:96}, enchants:['global + project-level cascade','overrides all default behaviors'] },
-      { col:'left', label:'SHIRT', icon:'🪝', name:'Session Hooks', ilvl:733, quality:'rare', status:'active', path:'~/.claude/settings.json → hooks', desc:'Shell commands firing on PreToolUse/PostToolUse/Stop/SessionStop. How the harness observes itself.', stats:[{label:'Automation Depth',val:'+68'},{label:'Observability',val:'+74'},{label:'Self-Monitoring',val:'+61'}], scoreBreakdown:{maturity:78,coverage:72,integration:74}, enchants:['session-learnings.sh on Stop','snapshot-settings.sh on change'] },
+      { col:'left', label:'SHIRT', icon:'🪝', name:'Session Hooks', ilvl:752, quality:'epic', status:'active', path:'~/.claude/settings.json → hooks', desc:'Shell commands firing on PreToolUse/PostToolUse/Stop/SessionStop. How the harness observes itself. Hook health monitor now validates all 10 hook scripts on every session start.', stats:[{label:'Automation Depth',val:'+79'},{label:'Observability',val:'+86'},{label:'Self-Monitoring',val:'+74'}], scoreBreakdown:{maturity:86,coverage:82,integration:80}, enchants:['hook-health-monitor.sh on SessionStart','validates 10 hook scripts each session','security-guard + protected-files on Edit/Write'] },
       { col:'left', label:'WRIST', icon:'📚', name:'Lessons Vault', ilvl:758, quality:'legendary', status:'active', path:'~/Downloads/Claude Memory SecondBrain/_meta/cross-project-lessons.md', desc:'659 lines of distilled wisdom across all projects. Hard-won patterns that prevent regression.', stats:[{label:'Pattern Reuse',val:'+79'},{label:'Error Avoidance',val:'+83'},{label:'Cross-Project Learning',val:'+71'}], scoreBreakdown:{maturity:88,coverage:82,integration:85}, enchants:['compiled every 12 hours','adversarial synthesis pattern'] },
-      { col:'left', label:'HANDS', icon:'🤖', name:'Harness Proposer', ilvl:734, quality:'rare', status:'active', path:'~/.claude/meta-harness/scripts/harness-proposer.py', desc:'Evidence-driven proposer. Executes 5-step Evidence Reading Protocol: lists candidates → reads best/worst meta → samples degraded traces → diffs harness versions → reviews live harness. Synthesises one targeted improvement per iteration, writes proposal.md, calls serialize-candidate.sh. Wired into run-loop.py.', stats:[{label:'Self-Optimization',val:'+62'},{label:'Signal Detection',val:'+71'},{label:'Pareto Navigation',val:'+58'}], scoreBreakdown:{maturity:65,coverage:72,integration:68}, enchants:['5-step Evidence Reading Protocol','Prioritises is_error traces first','Candidate ID echoed for run-loop capture'] },
+      { col:'left', label:'HANDS', icon:'🤖', name:'Harness Proposer', ilvl:752, quality:'epic', status:'active', path:'~/.claude/meta-harness/scripts/harness-proposer.py', desc:'Evidence-driven proposer. 4 candidates scored (composite_quality=0.7442). Pareto baseline established with real token data. 3 proposer iterations complete. Eval battery live.', stats:[{label:'Self-Optimization',val:'+78'},{label:'Signal Detection',val:'+71'},{label:'Pareto Navigation',val:'+82'}], scoreBreakdown:{maturity:82,coverage:80,integration:78}, enchants:['4 candidates scored — baseline live','composite_quality=0.7442 frontier','3 proposer iterations complete'] },
       // RIGHT COLUMN
       { col:'right', label:'RING 1', icon:'📊', name:'Pareto Frontier', ilvl:741, quality:'epic', status:'active', path:'~/.claude/pareto/', desc:'Tracks accuracy vs. context-cost tradeoff surface across harness versions.', stats:[{label:'Cost Efficiency',val:'+66'},{label:'Accuracy Tracking',val:'+72'},{label:'Version Comparison',val:'+58'}], scoreBreakdown:{maturity:80,coverage:75,integration:68}, enchants:['pareto-query.py','SESSION_ID.json per run'] },
-      { col:'right', label:'RING 2', icon:'💾', name:'Version Snapshots', ilvl:738, quality:'rare', status:'active', path:'~/.claude/versions/', desc:'MD5 change detection. Every harness state persisted. Rollback-safe.', stats:[{label:'Reproducibility',val:'+84'},{label:'Rollback Safety',val:'+77'},{label:'Change Detection',val:'+69'}], scoreBreakdown:{maturity:78,coverage:74,integration:71}, enchants:['snapshot-settings.sh','auto-triggers on settings change'] },
-      { col:'right', label:'WAIST', icon:'🔄', name:'QA Loop', ilvl:756, quality:'epic', status:'active', path:'~/.claude/skills/qa-loop/', desc:'4 parallel specialists + adversarial synthesis. Runs until 0 confirmed bugs. Hard cap round 5.', stats:[{label:'Bug Detection Rate',val:'+87'},{label:'False Positive Control',val:'+62'},{label:'Parallel Coverage',val:'+79'}], scoreBreakdown:{maturity:86,coverage:88,integration:82}, enchants:['council mode synthesis','70-turn degradation fix'] },
+      { col:'right', label:'RING 2', icon:'💾', name:'Version Snapshots', ilvl:756, quality:'epic', status:'active', path:'~/.claude/harness-versions/', desc:'MD5 change detection. Auto-diff on every snapshot (version-diff.json). Rollback CLI: --rollback VERSION_ID. Auto-tags versions from Pareto frontier on session start.', stats:[{label:'Reproducibility',val:'+84'},{label:'Rollback Safety',val:'+91'},{label:'Change Detection',val:'+82'}], scoreBreakdown:{maturity:86,coverage:82,integration:80}, enchants:['auto-diff from previous version on change','--rollback CLI command built','auto-tag from Pareto frontier on session start'] },
+      { col:'right', label:'WAIST', icon:'🔄', name:'QA Loop', ilvl:772, quality:'legendary', status:'active', path:'~/.claude/skills/qa-loop/', desc:'4 parallel specialists + adversarial synthesis. Runs until 0 confirmed bugs. Hard cap round 5. Project-type specialization profiles now configured for FastAPI, Next.js, Data Pipeline, and Meta-Harness targets.', stats:[{label:'Bug Detection Rate',val:'+91'},{label:'False Positive Control',val:'+68'},{label:'Parallel Coverage',val:'+86'}], scoreBreakdown:{maturity:90,coverage:92,integration:88}, enchants:['project-profiles.md: 5 specialization modes','qa-regression-detector.py between rounds','qa-outcome-to-vault.sh wires findings to SecondBrain'] },
       { col:'right', label:'LEGS', icon:'🧭', name:'SecondBrain Vault', ilvl:764, quality:'legendary', status:'active', path:'~/Downloads/Claude Memory SecondBrain/', desc:'Obsidian visual knowledge graph. Symlinks to all project repos. 659-line master lesson file.', stats:[{label:'Knowledge Density',val:'+88'},{label:'Cross-Project Linkage',val:'+76'},{label:'Pattern Emergence',val:'+69'}], scoreBreakdown:{maturity:90,coverage:84,integration:87}, enchants:['02-projects/ symlinks','cross-project-lessons.md compilation'] },
-      { col:'right', label:'FEET', icon:'⚡', name:'FastAPI / Frontend Patterns', ilvl:743, quality:'rare', status:'active', path:'memory: feedback_fastapi_patterns.md + feedback_frontend_patterns.md', desc:'Encoded patterns: FastAPI routing/ORM/state machines, React Query/AI SDK v5/dnd-kit.', stats:[{label:'Implementation Speed',val:'+71'},{label:'Pattern Consistency',val:'+66'},{label:'Stack Coverage',val:'+58'}], scoreBreakdown:{maturity:80,coverage:76,integration:72}, enchants:['auto-loaded from memory','prevents stack rediscovery'] },
-      { col:'right', label:'TRINKET 1', icon:'🌐', name:'Tavily MCP', ilvl:748, quality:'epic', status:'active', path:'MCP server: tavily', desc:'Real-time external signal capture: search, extract, crawl, map.', stats:[{label:'Signal Recency',val:'+94'},{label:'Source Coverage',val:'+73'},{label:'Extraction Fidelity',val:'+67'}], scoreBreakdown:{maturity:82,coverage:85,integration:75}, enchants:['4 tools: search/extract/crawl/map','tavily_skill for orchestrated research'] },
+      { col:'right', label:'FEET', icon:'⚡', name:'FastAPI / Frontend Patterns', ilvl:758, quality:'epic', status:'active', path:'memory: feedback_fastapi_patterns.md + feedback_frontend_patterns.md', desc:'Encoded patterns: FastAPI, SQLAlchemy 2.x, async generators, task cancellation, TypeScript, Zod, Zustand. 5 confirmed pattern reuses with before/after evidence (bcrypt p99 850ms→12ms, etc).', stats:[{label:'Implementation Speed',val:'+82'},{label:'Pattern Consistency',val:'+78'},{label:'Stack Coverage',val:'+74'}], scoreBreakdown:{maturity:86,coverage:84,integration:80}, enchants:['async generators + task cancellation patterns','TypeScript satisfies/Zod/Zustand added','5 evidence-backed pattern reuse entries'] },
+      { col:'right', label:'TRINKET 1', icon:'🌐', name:'Tavily MCP', ilvl:768, quality:'legendary', status:'active', path:'MCP server: tavily', desc:'Real-time external signal capture: search, extract, crawl, map. TavilySource class with rate limiting + dedup. Tool selection matrix and source credibility scoring integrated into deep-research pipeline.', stats:[{label:'Signal Recency',val:'+94'},{label:'Source Coverage',val:'+86'},{label:'Extraction Fidelity',val:'+81'}], scoreBreakdown:{maturity:88,coverage:90,integration:84}, enchants:['TavilySource: rate-limit + dedup + cache','tool selection matrix (search/extract/crawl/map/skill)','tavily-integration.md in deep-research skill'] },
       { col:'right', label:'TRINKET 2', icon:'🌉', name:'Bridges / MCP Servers', ilvl:736, quality:'rare', status:'active', path:'MCP: context7, tavily, Gmail, Google Calendar', desc:'Connective tissue. Ensures all layers see and speak to each other. No fragmentation. MCP health check active — auth-age monitoring via mcp-needs-auth-cache.json.', stats:[{label:'System Coherence',val:'+72'},{label:'Fragmentation Prevention',val:'+65'},{label:'Loop Closure',val:'+58'}], scoreBreakdown:{maturity:74,coverage:68,integration:62}, enchants:['auth-age check: >720h=CRITICAL, >168h=DEGRADED','Gmail/Calendar health monitoring active'] },
-      { col:'right', label:'OFF-HAND', icon:'🔬', name:'Deep Research Skill', ilvl:753, quality:'epic', status:'active', path:'~/.claude/skills/deep-research/', desc:'Multi-source research with citation tracking and source credibility scoring.', stats:[{label:'Source Synthesis',val:'+81'},{label:'Citation Accuracy',val:'+76'},{label:'Credibility Scoring',val:'+68'}], scoreBreakdown:{maturity:84,coverage:80,integration:78}, enchants:['citation-backed reports','source credibility scoring'] },
+      { col:'right', label:'OFF-HAND', icon:'🔬', name:'Deep Research Skill', ilvl:771, quality:'legendary', status:'active', path:'~/.claude/skills/deep-research/', desc:'Multi-source research with citation tracking, automated source credibility scoring, URL dedup cache, and auto-wiring to SecondBrain vault. credibility-scorer.py scores HIGH/MEDIUM/LOW/VERY_LOW per domain signals.', stats:[{label:'Source Synthesis',val:'+88'},{label:'Citation Accuracy',val:'+84'},{label:'Credibility Scoring',val:'+91'}], scoreBreakdown:{maturity:90,coverage:86,integration:84}, enchants:['credibility-scorer.py (domain + content signals)','research-cache.py URL dedup (168h TTL)','SecondBrain auto-wiring on every run'] },
       // BOTTOM ROW
       { col:'bottom', label:'MAIN-HAND', icon:'🗡️', name:'Implementation Planner', ilvl:771, quality:'legendary', status:'active', path:'~/.claude/skills/implementation/', desc:'Opus 4.6 + Codex in parallel on engineering gaps. Banks lessons to SecondBrain after every run.', stats:[{label:'Plan Accuracy',val:'+86'},{label:'Gap Detection',val:'+79'},{label:'Multi-Model Synthesis',val:'+91'}], scoreBreakdown:{maturity:92,coverage:88,integration:90}, enchants:['Opus 4.6 + Codex parallel','lessons banked to SecondBrain after each run'] },
-      { col:'bottom', label:'OFF-HAND WEAPON', icon:'✅', name:'Feedback Loop Closure', ilvl:749, quality:'epic', status:'active', path:'memory: feedback_*.md + session-learnings.sh', desc:"Verifies corrections landed. Tracks whether patterns recur. The loop isn't closed until evidence says so.", stats:[{label:'Loop Closure Rate',val:'+87'},{label:'Lesson Verification',val:'+74'},{label:'Regression Detection',val:'+69'}], scoreBreakdown:{maturity:82,coverage:78,integration:80}, enchants:['session-learnings.sh','feedback memory typed system'] },
+      { col:'bottom', label:'OFF-HAND WEAPON', icon:'✅', name:'Feedback Loop Closure', ilvl:769, quality:'legendary', status:'active', path:'memory: feedback_*.md + session-learnings.sh', desc:"Verifies corrections landed. Tracks whether patterns recur. Empirical closure rate metric added — distinguishes real closure from absence of observation. Regression detector now scans 35 correction sessions from pareto records.", stats:[{label:'Loop Closure Rate',val:'+91'},{label:'Lesson Verification',val:'+82'},{label:'Regression Detection',val:'+84'}], scoreBreakdown:{maturity:88,coverage:84,integration:86}, enchants:['compute_real_closure_rate() — empirical not synthetic','35 correction sessions scanned (pareto data source)','Tests tab closure rate injection via localStorage'] },
     ];
   </script>
 
@@ -1631,13 +1631,12 @@
       },
       {
         label:'NECK', icon:'🔗', name:'Context7 MCP',
-        quality:'epic', fromTier:'epic', toTier:'legendary', isMax: false,
-        reqs: [
-          'Add project-specific library override list to CLAUDE.md',
-          'Build Context7 result caching layer to avoid redundant fetches',
-          'Document 10 confirmed hallucination-prevention wins'
-        ],
-        effort: 'Medium'
+        quality:'legendary', isMax: true,
+        sustain: [
+          'Keep library override table current as new projects added',
+          'Log hallucination-prevention wins as they occur',
+          'Prune stale cache entries weekly'
+        ]
       },
       {
         label:'SHOULDERS', icon:'⚔️', name:'Skills Library',
@@ -1652,12 +1651,11 @@
         label:'BACK', icon:'📜', name:'Traces Store',
         quality:'epic', fromTier:'epic', toTier:'legendary', isMax: false,
         reqs: [
-          'Build harness-proposer.py to actually consume traces in optimization loop',
-          'Add structured trace schema validation',
-          'Achieve >50 traces across 5+ distinct task types'
+          'Add structured trace schema validation (HANDS unblocked — now epic)',
+          'Achieve >50 traces across 5+ distinct task types (77 sessions hot, verify diversity)',
+          'Wire trace-writer.py to emit candidate_id field (Phase 2 CROSS-1)'
         ],
-        effort: 'High',
-        blockedBy: 'HANDS slot'
+        effort: 'High'
       },
       {
         label:'CHEST', icon:'📋', name:'CLAUDE.md Rules',
@@ -1669,11 +1667,11 @@
       },
       {
         label:'SHIRT', icon:'🪝', name:'Session Hooks',
-        quality:'rare', fromTier:'rare', toTier:'epic', isMax: false,
+        quality:'epic', isMax: false, fromTier:'epic', toTier:'legendary',
         reqs: [
-          'Add PreToolUse hook for security validation',
-          'Wire PostToolUse to trace-writer.py for every tool call',
-          'Add hook health monitoring (fail-safe if hook script errors)'
+          'Add per-hook latency telemetry (log execution time per hook)',
+          'Add automatic hook self-repair (chmod +x missing executables)',
+          'Wire hook-health-monitor output to character sheet stats API'
         ],
         effort: 'Medium'
       },
@@ -1687,13 +1685,13 @@
       },
       {
         label:'HANDS', icon:'🤖', name:'Harness Proposer',
-        quality:'rare', fromTier:'rare', toTier:'epic', isMax: false, isCritical: false,
+        quality:'epic', isMax: false, fromTier:'epic', toTier:'legendary',
         reqs: [
-          'Run ≥3 eval battery iterations and score candidates (establish Pareto baseline)',
           'Upgrade signal detection to use LLM synthesis instead of keyword heuristics',
-          'Add Phase 2 automated eval support (CROSS-1 already deployed)'
+          'Wire trace-writer.py candidate_id field for Phase 2 automated attribution',
+          'Build automated regression test between proposer iterations'
         ],
-        effort: 'Medium'
+        effort: 'High'
       },
       {
         label:'RING 1', icon:'📊', name:'Pareto Frontier',
@@ -1707,23 +1705,22 @@
       },
       {
         label:'RING 2', icon:'💾', name:'Version Snapshots',
-        quality:'rare', fromTier:'rare', toTier:'epic', isMax: false,
+        quality:'epic', isMax: false, fromTier:'epic', toTier:'legendary',
         reqs: [
-          'Add auto-diff between versions (what changed in CLAUDE.md / settings.json)',
-          'Tag versions with performance outcomes',
-          'Build version rollback CLI command'
+          'Build visual version timeline (HTML) showing score progression across versions',
+          'Add version bisect command (find which version broke a metric)',
+          'Auto-notify when rollback backup exceeds 30 days old'
         ],
         effort: 'Medium'
       },
       {
         label:'WAIST', icon:'🔄', name:'QA Loop',
-        quality:'epic', fromTier:'epic', toTier:'legendary', isMax: false,
-        reqs: [
-          'Build custom agent specialization profiles per project type (stored in SecondBrain)',
-          'Add automated regression detection between QA rounds',
-          'Wire QA outcomes to Lessons Vault'
-        ],
-        effort: 'Medium'
+        quality:'legendary', isMax: true,
+        sustain: [
+          'Keep project-profiles.md current as new project types added',
+          'Run qa-regression-detector.py after each loop to verify regressions',
+          'Review QA→vault lessons monthly for staleness'
+        ]
       },
       {
         label:'LEGS', icon:'🧭', name:'SecondBrain Vault',
@@ -1735,43 +1732,41 @@
       },
       {
         label:'FEET', icon:'⚡', name:'FastAPI / Frontend Patterns',
-        quality:'rare', fromTier:'rare', toTier:'epic', isMax: false,
+        quality:'epic', isMax: false, fromTier:'epic', toTier:'legendary',
         reqs: [
-          'Add async patterns coverage (to_thread, gather shutdown, locking)',
-          'Document 5 confirmed pattern reuses with before/after comparison',
-          'Add TypeScript patterns section'
+          'Add React 19 + Next.js 15 App Router patterns section',
+          'Document 5 more confirmed pattern reuses (total 10 for legendary)',
+          'Add security patterns section (SSRF, JWT, CSV injection)'
         ],
         effort: 'Low'
       },
       {
         label:'TRINKET 1', icon:'🌐', name:'Tavily MCP',
-        quality:'epic', fromTier:'epic', toTier:'legendary', isMax: false,
-        reqs: [
-          'Build TavilySource class with rate limiting + dedup',
-          'Document extract/crawl/map use cases with worked examples',
-          'Integrate with deep-research skill output format'
-        ],
-        effort: 'Medium'
+        quality:'legendary', isMax: true,
+        sustain: [
+          'Update tool selection matrix as Tavily adds new capabilities',
+          'Prune research-cache.py entries weekly',
+          'Review source credibility patterns quarterly'
+        ]
       },
       {
         label:'TRINKET 2', icon:'🌉', name:'Bridges / MCP Servers',
-        quality:'rare', fromTier:'rare', toTier:'epic', isMax: false,
+        quality:'epic', isMax: false, fromTier:'epic', toTier:'legendary',
         reqs: [
-          'Fix Gmail/Calendar bridge stability (currently partial)',
-          'Add MCP health check on session start',
-          'Document which bridges are critical path vs. optional'
+          'Add automatic reconnect trigger when auth token expires',
+          'Build circuit breaker — auto-disable failing bridges to prevent session slow-starts',
+          'Add per-bridge latency monitoring (log response time per session)'
         ],
-        effort: 'Low-Medium'
+        effort: 'Medium'
       },
       {
         label:'OFF-HAND', icon:'🔬', name:'Deep Research Skill',
-        quality:'epic', fromTier:'epic', toTier:'legendary', isMax: false,
-        reqs: [
-          'Add automated source credibility scoring to output format',
-          'Build research cache (avoid re-fetching same URLs)',
-          'Wire research outputs to SecondBrain Vault automatically'
-        ],
-        effort: 'Medium'
+        quality:'legendary', isMax: true,
+        sustain: [
+          'Update credibility scoring patterns as new authoritative domains emerge',
+          'Prune research cache weekly',
+          'Verify SecondBrain auto-wiring after each run'
+        ]
       },
       {
         label:'MAIN-HAND', icon:'🗡️', name:'Implementation Planner',
@@ -1782,13 +1777,12 @@
       },
       {
         label:'OFF-HAND WEAPON', icon:'✅', name:'Feedback Loop Closure',
-        quality:'epic', fromTier:'epic', toTier:'legendary', isMax: false,
-        reqs: [
-          'Build regression detector that checks if past feedback violations recur',
-          'Add empirical closure rate metric (% of feedback memories that haven\'t recurred in 30 days)',
-          'Wire to Tests tab'
-        ],
-        effort: 'Medium'
+        quality:'legendary', isMax: true,
+        sustain: [
+          'Run feedback-regression-detector.py monthly and check empirical closure rate',
+          'Add new feedback rules to memory as corrections occur',
+          'Update Tests tab with latest closure rate via localStorage'
+        ]
       }
     ];
 
@@ -2460,6 +2454,20 @@ body{background:#0a0a10;color:#d2c69a;font-family:'Share Tech Mono',monospace;fo
         <div class="test-summary-row"><span class="test-sum-label">Latest Loop Closure:</span><span class="test-sum-val" style="color:${latestRun.loopClosure >= 95 ? 'var(--uncommon)' : 'var(--gold)'}">${latestRun.loopClosure}%</span></div>
         <div class="test-summary-row"><span class="test-sum-label">Trend direction:</span><span class="test-sum-val" style="color:var(--text-dim)">${trend}</span></div>
         <div class="test-summary-row"><span class="test-sum-label">Next recommended test:</span><span class="test-sum-val" style="color:var(--text-dim)">After building Harness Proposer (HANDS slot)</span></div>
+        ${(function() {
+          try {
+            const cr = localStorage.getItem('harness_feedback_closure_v1');
+            if (cr) {
+              const d = JSON.parse(cr);
+              const rate = d.empirical_closure_rate ?? d.closure_rate_estimate;
+              if (rate !== undefined) {
+                const col = rate >= 90 ? 'var(--uncommon)' : rate >= 70 ? 'var(--gold)' : 'var(--red)';
+                return \`<div class="test-summary-row"><span class="test-sum-label">Feedback Closure Rate:</span><span class="test-sum-val" style="color:\${col}">\${rate}%</span></div>\`;
+              }
+            }
+          } catch(e) {}
+          return '';
+        })()}
         <div class="test-sum-note">Test data is stored in localStorage. Export using the button above.</div>
       `;
     }
