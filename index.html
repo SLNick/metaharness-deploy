@@ -1111,8 +1111,129 @@
     .mt-12 { margin-top: 12px; }
     .mt-20 { margin-top: 20px; }
   </style>
+
+  <!-- ============================================================
+       LOGIN GATE STYLES
+       Full-viewport overlay that sits above all app content.
+       Removed from DOM (not just hidden) on successful auth.
+  ============================================================ -->
+  <style>
+    #login-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #0a0a10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    #login-box {
+      width: 340px;
+      border: 1px solid rgba(200,168,75,0.4);
+      border-radius: 4px;
+      padding: 36px 32px 32px;
+      background: rgba(16,14,24,0.98);
+      box-shadow: 0 0 40px rgba(200,168,75,0.08);
+    }
+
+    #login-box .login-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: #c8a84b;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    #login-box .login-subtitle {
+      font-size: 0.65rem;
+      color: rgba(210,198,154,0.4);
+      text-align: center;
+      letter-spacing: 0.08em;
+      margin-bottom: 28px;
+    }
+
+    #login-box label {
+      display: block;
+      font-size: 0.65rem;
+      color: rgba(210,198,154,0.55);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    #login-box input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(200,168,75,0.25);
+      border-radius: 3px;
+      color: #d2c69a;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      padding: 8px 10px;
+      margin-bottom: 18px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #login-box input:focus {
+      border-color: rgba(200,168,75,0.7);
+    }
+
+    #login-btn {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      border: 1px solid rgba(200,168,75,0.5);
+      border-radius: 3px;
+      color: #c8a84b;
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    #login-btn:hover {
+      background: rgba(200,168,75,0.08);
+      border-color: rgba(200,168,75,0.8);
+    }
+
+    #login-error {
+      margin-top: 14px;
+      font-size: 0.7rem;
+      color: #ff4040;
+      text-align: center;
+      min-height: 1em;
+      letter-spacing: 0.05em;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- ============================================================
+       LOGIN GATE
+       Removed from DOM on successful auth; sessionStorage persists
+       within the tab so refresh re-checks without another prompt.
+  ============================================================ -->
+  <div id="login-gate" role="dialog" aria-modal="true" aria-label="Authentication required">
+    <div id="login-box">
+      <div class="login-title">⚔ Harness Access</div>
+      <div class="login-subtitle">Restricted System · Authorized Users Only</div>
+      <form id="login-form" autocomplete="off" novalidate>
+        <label for="login-user">Commander</label>
+        <input id="login-user" type="text" autocomplete="off" spellcheck="false" placeholder="Enter designation" />
+        <label for="login-pass">Passphrase</label>
+        <input id="login-pass" type="password" autocomplete="off" placeholder="••••••••••••••••••••••••••" />
+        <button id="login-btn" type="submit">Authenticate</button>
+      </form>
+      <div id="login-error" aria-live="polite"></div>
+    </div>
+  </div>
 
   <!-- ============================================================
        PAGE HEADER
@@ -3416,6 +3537,72 @@ body{background:#0a0a10;color:#d2c69a;font-family:'Share Tech Mono',monospace;fo
     renderSetBonuses();
     renderGaps();
     initTests();
+  </script>
+
+  <!-- ============================================================
+       AUTH — Login gate logic
+       Strategy: SHA-256 the entered password via SubtleCrypto,
+       compare hex digest against the pre-computed constant.
+       Username comparison is case-sensitive plain string match.
+       Session stored as sessionStorage flag — tab-scoped only.
+       No signup path exists; the form has no register link or UI.
+  ============================================================ -->
+  <script>
+    (function () {
+      // Pre-computed SHA-256 hex of the admin password.
+      // To rotate: compute sha256 of new password and replace this constant.
+      const EXPECTED_USER = 'Hyperion';
+      const EXPECTED_HASH = '7f20d17185c18094f692ea2ad7f2ce4bcd3a843c66c3bd4af23271fe95996486';
+
+      // Session key — cleared automatically when the tab closes
+      const SESSION_KEY = 'hge_auth_v1';
+
+      const gate   = document.getElementById('login-gate');
+      const form   = document.getElementById('login-form');
+      const errEl  = document.getElementById('login-error');
+      const userIn = document.getElementById('login-user');
+      const passIn = document.getElementById('login-pass');
+
+      // Fast-path: already authenticated this tab session
+      if (sessionStorage.getItem(SESSION_KEY) === '1') {
+        gate.remove();
+        return;
+      }
+
+      // Hash a string with SHA-256 → lowercase hex string
+      async function sha256hex(str) {
+        const buf  = new TextEncoder().encode(str);
+        const hash = await crypto.subtle.digest('SHA-256', buf);
+        return Array.from(new Uint8Array(hash))
+          .map(b => b.toString(16).padStart(2, '0'))
+          .join('');
+      }
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        errEl.textContent = '';
+
+        const user = userIn.value;
+        const pass = passIn.value;
+
+        // Hash first, then compare — both fields checked before revealing result
+        const passHash = await sha256hex(pass);
+
+        if (user === EXPECTED_USER && passHash === EXPECTED_HASH) {
+          // Valid: grant session, remove gate entirely
+          sessionStorage.setItem(SESSION_KEY, '1');
+          gate.remove();
+        } else {
+          // Generic error — deliberately does not reveal which field is wrong
+          errEl.textContent = 'Invalid credentials. Access denied.';
+          passIn.value = '';
+          passIn.focus();
+        }
+      });
+
+      // Focus username field on load
+      userIn.focus();
+    })();
   </script>
 
 </body>
