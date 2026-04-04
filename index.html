@@ -1826,13 +1826,11 @@
       },
       {
         label:'RING 2', icon:'💾', name:'Version Snapshots',
-        quality:'epic', isMax: false, fromTier:'epic', toTier:'legendary',
-        reqs: [
-          'Build visual version timeline (HTML) showing score progression across versions',
-          'Add version bisect command (find which version broke a metric)',
-          'Auto-notify when rollback backup exceeds 30 days old'
-        ],
-        effort: 'Medium'
+        quality:'legendary', isMax: true,
+        sustain: [
+          'Monitor drift reports for config regressions',
+          'Archive stale baselines monthly'
+        ]
       },
       {
         label:'WAIST', icon:'🔄', name:'QA Loop',
@@ -1872,13 +1870,12 @@
       },
       {
         label:'TRINKET 2', icon:'🌉', name:'Bridges / MCP Servers',
-        quality:'epic', isMax: false, fromTier:'epic', toTier:'legendary',
-        reqs: [
-          'Add automatic reconnect trigger when auth token expires',
-          'Build circuit breaker — auto-disable failing bridges to prevent session slow-starts',
-          'Add per-bridge latency monitoring (log response time per session)'
-        ],
-        effort: 'Medium'
+        quality:'legendary', isMax: true,
+        sustain: [
+          'Monitor circuit breaker state transitions daily',
+          'Review retry budget allocations quarterly',
+          'Update backoff thresholds as MCP server SLAs change'
+        ]
       },
       {
         label:'OFF-HAND', icon:'🔬', name:'Deep Research Skill',
